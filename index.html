@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#16130f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Hörregal">
+<title>Hörregal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9a54b'/%3E%3Cpath d='M16 38v-6a16 16 0 0 1 32 0v6' stroke='%231d1406' stroke-width='5' fill='none'/%3E%3Crect x='12' y='36' width='10' height='16' rx='4' fill='%231d1406'/%3E%3Crect x='42' y='36' width='10' height='16' rx='4' fill='%231d1406'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#16130f; --panel:#201c17; --panel2:#2a251e; --line:#3a332a;
+    --ink:#f3ece1; --muted:#a89c8a; --accent:#e9a54b; --accent-ink:#1d1406;
+    --spotify:#1ed760; --youtube:#ff3b30; --ok:#7fc58b; --r:14px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;font-size:15px;line-height:1.45}
+  button,input,select,textarea{font:inherit;color:inherit}
+  a{color:inherit}
+  code{background:#0f0d0a;border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:13px;word-break:break-all}
+  .wrap{max-width:1100px;margin:0 auto;padding:22px 18px 80px}
+  header{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+  h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:30px;margin:0;letter-spacing:-.5px}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px}
+  .spacer{flex:1}
+  .btn{border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:9px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;text-decoration:none;white-space:nowrap}
+  .btn:hover{border-color:#5a4e3f}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+  .btn.sp{background:var(--spotify);color:#000;border-color:var(--spotify);font-weight:600}
+  .btn.ghost{background:transparent}
+  .btn.small{padding:6px 10px;font-size:13px;border-radius:8px}
+  .btn.danger{color:#ff8a80}
+  .btn svg{width:16px;height:16px;flex:0 0 16px}
+  .iconbtn{width:40px;justify-content:center;padding:9px 0}
+
+  .banner{display:none;align-items:center;gap:12px;background:#132a1b;border:1px solid #2b6b40;border-radius:14px;padding:10px 12px;margin-bottom:16px}
+  .banner img{width:48px;height:48px;border-radius:8px;object-fit:cover}
+  .banner .bt{flex:1;min-width:0}
+  .banner .bt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .notice{background:#2b2214;border:1px solid #5b4524;color:#f0d3a6;border-radius:10px;padding:9px 12px;font-size:13px;margin-bottom:14px;display:none}
+  .syncline{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block}
+  .dot.on{background:var(--spotify);box-shadow:0 0 0 3px rgba(30,215,96,.18)}
+
+  .hero{display:none;gap:18px;background:linear-gradient(135deg,#2a2117,#1f1a14);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:22px;align-items:center}
+  .hero .cover{width:120px;flex:0 0 120px;border-radius:12px}
+  .hero .status{display:none}
+  .hero .gen{padding:10px}.hero .gen .gt{font-size:14px}
+  .hero h2{font-family:Fraunces,Georgia,serif;margin:2px 0 4px;font-size:22px}
+  .hero .label{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--accent);font-weight:600}
+  .hero .actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer;color:var(--muted)}
+  .chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600}
+  .search{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .12s,border-color .12s}
+  .card:hover{transform:translateY(-2px);border-color:#5a4e3f}
+  .card .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .card .t{font-weight:600;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .card .a{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .card .pos{font-size:12px;color:var(--muted);margin-top:auto;padding-top:6px;display:flex;justify-content:space-between;gap:6px}
+  .cover{position:relative;aspect-ratio:1/1;width:100%;background:#000;overflow:hidden}
+  .cover img.ci{width:100%;height:100%;object-fit:cover;display:block}
+  .gen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:14px;font-family:Fraunces,Georgia,serif;font-weight:700;line-height:1.1;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+  .gen .gt{font-size:19px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .badge{position:absolute;top:8px;left:8px;display:flex;align-items:center;gap:5px;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);padding:4px 8px 4px 5px;border-radius:999px;font-size:11px;font-weight:600;color:#fff}
+  .badge svg{width:16px;height:16px;display:block}
+  .status{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.72);padding:3px 8px;border-radius:999px;font-size:11px;font-weight:600}
+  .status.done{color:var(--ok)} .status.later{color:#9fb7ff} .status.now{color:var(--accent)}
+  .bar{height:4px;background:#3a332a;border-radius:4px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--accent);border-radius:4px}
+  .empty{text-align:center;color:var(--muted);padding:60px 20px;border:1px dashed var(--line);border-radius:18px}
+  .empty h3{font-family:Fraunces,Georgia,serif;color:var(--ink);font-size:22px;margin:0 0 6px}
+
+  .overlay{position:fixed;inset:0;background:rgba(10,8,6,.72);display:none;align-items:flex-start;justify-content:center;padding:30px 12px;overflow:auto;z-index:20}
+  .overlay.open{display:flex}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:100%;max-width:660px;padding:20px}
+  .modal h2{font-family:Fraunces,Georgia,serif;margin:0 0 14px;font-size:24px}
+  .modal h3{font-size:14px;margin:18px 0 8px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
+  .mgrid{display:grid;grid-template-columns:150px 1fr;gap:16px}
+  @media (max-width:560px){.mgrid{grid-template-columns:1fr}.mgrid .cv{max-width:180px}.hero .cover{width:84px;flex-basis:84px}.hero h2{font-size:18px}h1{font-size:25px}}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
+  .field label{font-size:12px;color:var(--muted);font-weight:500}
+  .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;width:100%}
+  .field textarea{resize:vertical;min-height:60px}
+  .row{display:flex;gap:10px}
+  .row>.field{flex:1}
+  .hint{font-size:12px;color:var(--muted)}
+  .drop{border:1px dashed var(--line);border-radius:10px;padding:8px;font-size:12px;color:var(--muted);text-align:center;margin-top:8px;cursor:pointer}
+  .drop:hover,.drop.over{border-color:var(--accent);color:var(--ink)}
+  .stepper{display:flex;gap:6px;flex-wrap:wrap;margin-top:-4px;margin-bottom:10px}
+  .mfoot{display:flex;gap:8px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+  .mfoot .left{margin-right:auto}
+  .detected{font-size:12px;margin-top:4px;display:flex;align-items:center;gap:6px}
+  .detected svg{width:14px;height:14px}
+  .tabs{display:flex;gap:6px;margin-bottom:14px}
+  .spsearch{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:14px}
+  .results{display:flex;flex-direction:column;gap:4px;max-height:330px;overflow:auto;margin-top:8px}
+  .res{display:flex;gap:10px;align-items:center;padding:6px;border-radius:9px;cursor:pointer;border:1px solid transparent;background:none;text-align:left;width:100%}
+  .res:hover{background:#332c23;border-color:var(--line)}
+  .res img,.res .ph{width:46px;height:46px;border-radius:6px;object-fit:cover;flex:0 0 46px;background:#444}
+  .res .rt{flex:1;min-width:0}
+  .res .rt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .res .rt span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+  .tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:2px 6px;border-radius:5px;background:#3a332a;color:var(--muted);flex:0 0 auto}
+  .steps{margin:0;padding-left:20px}
+  .steps li{margin-bottom:9px}
+  .switch{display:flex;align-items:center;gap:10px;cursor:pointer;margin:8px 0}
+  .switch input{width:18px;height:18px;accent-color:var(--spotify)}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;font-size:13px;opacity:0;transition:.2s;pointer-events:none;z-index:40;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .footer{margin-top:34px;color:var(--muted);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+  /* play button on cards */
+  .cplay{position:absolute;right:8px;bottom:8px;width:42px;height:42px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);opacity:.92;transition:transform .12s}
+  .cplay:hover{transform:scale(1.08);opacity:1}
+  .cplay svg{width:18px;height:18px}
+  .hero .cplay{display:none}
+
+  /* player bar */
+  body.playing .wrap{padding-bottom:170px}
+  .pbar{position:fixed;left:0;right:0;bottom:0;background:rgba(32,28,23,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);z-index:15;display:none;padding:8px 16px calc(10px + env(safe-area-inset-bottom))}
+  .pbar.open{display:block}
+  .pin{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:14px}
+  .pcov{width:54px;height:54px;flex:0 0 54px;border-radius:8px;overflow:hidden;position:relative}
+  .pcov .badge,.pcov .status,.pcov .cplay{display:none}
+  .pcov .gen{padding:5px}.pcov .gen .gt{font-size:9px}.pcov .gen div:last-child{display:none}
+  .pmeta{flex:1;min-width:0}
+  .pmeta b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pmeta span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pctl{display:flex;align-items:center;gap:6px}
+  .pb{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;font-size:11px;font-weight:700;position:relative}
+  .pb:hover{border-color:#5a4e3f}
+  .pb svg{width:18px;height:18px}
+  .pb small{position:absolute;bottom:3px;font-size:9px;font-weight:700}
+  .pb.big{width:52px;height:52px;background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .pb.big svg{width:22px;height:22px}
+  .pright{display:flex;align-items:center;gap:6px}
+  .pright select{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:12px;max-width:170px}
+  .prog{max-width:1100px;margin:6px auto 0;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .prog input{flex:1;accent-color:var(--accent)}
+  .ytwrap{position:fixed;right:16px;bottom:120px;width:356px;height:200px;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.55);display:none;z-index:16}
+  .ytwrap.open{display:block}
+  .ytwrap iframe{width:100%;height:100%;border:0}
+  @media (max-width:700px){
+    .pin{flex-wrap:wrap;gap:8px 10px}
+    .pmeta{flex:1 1 0}
+    .pcov{width:44px;height:44px;flex-basis:44px}
+    .pctl{order:3;flex:1 1 100%;justify-content:center}
+    .pright{order:2}
+    .pright select{max-width:110px}
+    .ytwrap{right:12px;width:240px;height:135px;bottom:178px}
+    body.playing .wrap{padding-bottom:230px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Hör<span>regal</span></h1>
+      <div class="sub" id="stats">Deine Hörbücher von Spotify &amp; YouTube</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="btn sp" id="nowBtn" style="display:none" title="Übernimmt, was gerade auf Spotify läuft"><span data-ico="spotifyBlack"></span>Läuft gerade</button>
+    <button class="btn primary" id="addBtn">＋ Hörbuch</button>
+    <button class="btn iconbtn" id="setBtn" title="Einstellungen" aria-label="Einstellungen">⚙︎</button>
+  </header>
+
+  <div class="notice" id="notice"></div>
+  <div class="banner" id="banner"></div>
+  <section class="hero" id="hero"></section>
+
+  <div class="toolbar">
+    <div class="chips" id="statusChips"></div>
+    <div class="chips" id="platChips"></div>
+    <input class="search" id="q" type="search" placeholder="Im Regal suchen …">
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div id="emptyBox"></div>
+
+  <div class="footer">
+    <span class="syncline" id="syncline"></span>
+    <span class="spacer"></span>
+    <span>Tipp: Link aus Spotify/YouTube kopieren und hier einfügen (Strg/⌘+V).</span>
+  </div>
+</div>
+
+<!-- Add/Edit modal -->
+<div class="overlay" id="ov">
+  <form class="modal" id="form" autocomplete="off">
+    <h2 id="mTitle">Neues Hörbuch</h2>
+
+    <div class="spsearch" id="spBox">
+      <div class="row" style="gap:8px">
+        <input class="search" id="spQ" placeholder="Auf Spotify suchen: Titel oder Autor …" style="background:var(--panel)">
+        <button type="button" class="btn sp" id="spGo"><span data-ico="spotifyBlack"></span>Suchen</button>
+      </div>
+      <div class="hint" id="spHint" style="margin-top:6px"></div>
+      <div class="results" id="spRes"></div>
+    </div>
+
+    <div class="field">
+      <label for="fUrl">Link (Spotify oder YouTube)</label>
+      <input id="fUrl" placeholder="https://open.spotify.com/… oder https://youtu.be/…">
+      <div class="detected" id="detected"></div>
+    </div>
+    <div class="mgrid">
+      <div class="cv">
+        <div class="cover" id="fCover" style="border-radius:12px"></div>
+        <div class="drop" id="drop">Eigenes Bild: ziehen, einfügen oder <u>auswählen</u></div>
+        <input type="file" id="fFile" accept="image/*" hidden>
+        <button type="button" class="btn small ghost" id="rmImg" style="margin-top:6px;display:none;width:100%;justify-content:center">Bild entfernen</button>
+      </div>
+      <div>
+        <div class="field">
+          <label for="fTitle">Titel *</label>
+          <input id="fTitle" placeholder="z. B. Der Herr der Ringe – Teil 1">
+        </div>
+        <div class="field">
+          <label for="fAuthor">Autor / Sprecher</label>
+          <input id="fAuthor" placeholder="optional">
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="fPlat">Plattform</label>
+            <select id="fPlat"><option value="spotify">Spotify</option><option value="youtube">YouTube</option></select>
+          </div>
+          <div class="field">
+            <label for="fStatus">Status</label>
+            <select id="fStatus">
+              <option value="now">Höre gerade</option>
+              <option value="later">Später</option>
+              <option value="done">Fertig</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fPos">Hier aufgehört (gesamt, h:mm:ss)</label>
+        <input id="fPos" inputmode="numeric" placeholder="0:00">
+      </div>
+      <div class="field">
+        <label for="fDur">Gesamtlänge</label>
+        <input id="fDur" inputmode="numeric" placeholder="z. B. 9:42:10">
+      </div>
+    </div>
+    <div class="stepper">
+      <button type="button" class="btn small" data-step="-300">−5 min</button>
+      <button type="button" class="btn small" data-step="-30">−30 s</button>
+      <button type="button" class="btn small" data-step="30">+30 s</button>
+      <button type="button" class="btn small" data-step="300">+5 min</button>
+      <button type="button" class="btn small" data-step="1800">+30 min</button>
+    </div>
+    <div class="field">
+      <label for="fChapter">Kapitel / Track</label>
+      <input id="fChapter" placeholder="z. B. Kapitel 7 – wird bei Spotify automatisch gefüllt">
+    </div>
+    <div class="field">
+      <label for="fNote">Notiz</label>
+      <textarea id="fNote" placeholder="Wo war ich gerade? Wer ist wer? …"></textarea>
+    </div>
+    <div class="mfoot">
+      <button type="button" class="btn small ghost danger left" id="delBtn">Löschen</button>
+      <button type="button" class="btn ghost small" id="extBtn" title="In Spotify/YouTube öffnen">↗ Extern öffnen</button>
+      <button type="button" class="btn" id="openBtn">▶ Abspielen</button>
+      <button type="button" class="btn ghost" id="cancelBtn">Abbrechen</button>
+      <button type="submit" class="btn primary">Speichern</button>
+    </div>
+  </form>
+</div>
+
+<!-- Settings modal -->
+<div class="overlay" id="ovS">
+  <div class="modal">
+    <h2>Einstellungen</h2>
+    <div id="setSpotify"></div>
+    <h3>Daten</h3>
+    <p class="hint" style="margin-top:0">Deine Hörbücher sind nur in diesem Browser gespeichert. Mit einer Sicherungsdatei kannst du sie aufs Handy oder einen anderen Computer übertragen.</p>
+    <div class="row" style="flex-wrap:wrap;gap:8px">
+      <button class="btn" id="expBtn">⬇ Sicherung herunterladen</button>
+      <button class="btn" id="impBtn">⬆ Sicherung laden</button>
+      <input type="file" id="impFile" accept="application/json,.json" hidden>
+    </div>
+    <div class="mfoot"><button class="btn primary" id="closeS">Fertig</button></div>
+  </div>
+</div>
+
+<!-- Player -->
+<div class="ytwrap" id="ytWrap"><div id="ytPlayer"></div></div>
+<div class="pbar" id="pbar" role="region" aria-label="Player">
+  <div class="pin">
+    <div class="pcov" id="pCov"></div>
+    <div class="pmeta"><b id="pTitle"></b><span id="pSub"></span></div>
+    <div class="pctl">
+      <button class="pb" id="pPrev" title="Vorheriger Track/Kapitel" aria-label="Zurück zum vorherigen Track"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="pb" id="pBack" title="30 Sekunden zurück (←)" aria-label="30 Sekunden zurück"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4h4"/></svg><small>30</small></button>
+      <button class="pb big" id="pPlay" title="Abspielen / Pause (Leertaste)" aria-label="Abspielen oder Pause"></button>
+      <button class="pb" id="pFwd" title="30 Sekunden vor (→)" aria-label="30 Sekunden vor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4h-4"/></svg><small>30</small></button>
+      <button class="pb" id="pNext" title="Nächster Track/Kapitel" aria-label="Zum nächsten Track"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+    </div>
+    <div class="pright">
+      <select id="pDev" title="Wo soll Spotify spielen?"></select>
+      <button class="btn small" id="pRate" title="Geschwindigkeit">1×</button>
+      <button class="btn small" id="pSleep" title="Schlaftimer: stoppt automatisch">☾</button>
+      <button class="pb" id="pClose" title="Stoppen &amp; schließen" aria-label="Stoppen und schließen">✕</button>
+    </div>
+  </div>
+  <div class="prog"><span id="pCur">0:00</span><input type="range" id="pSeek" min="0" max="1" step="1" value="0" aria-label="Position"><span id="pDur">--:--</span></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ================= basics ================= */
+const ICON = {
+  spotify:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#1ed760"/><path d="M6.2 9.3c3.9-1.1 8.4-.8 11.7 1.1M6.8 12.5c3.2-.9 6.9-.6 9.6 1M7.4 15.5c2.6-.7 5.4-.5 7.6.8" stroke="#000" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
+  spotifyBlack:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#000"/><path d="M6.2 9.3c3.9-1.1 8.4-.8 11.7 1.1M6.8 12.5c3.2-.9 6.9-.6 9.6 1M7.4 15.5c2.6-.7 5.4-.5 7.6.8" stroke="#1ed760" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24"><rect x="1" y="4.5" width="22" height="15" rx="4.5" fill="#ff0033"/><path d="M10 8.7v6.6l5.6-3.3z" fill="#fff"/></svg>'
+};
+document.querySelectorAll('[data-ico]').forEach(e=>e.outerHTML=ICON[e.dataset.ico]);
+const PNAME={spotify:'Spotify',youtube:'YouTube'};
+const SNAME={now:'Höre gerade',later:'Später',done:'Fertig'};
+const TYPENAME={audiobook:'Hörbuch',album:'Album',show:'Podcast',episode:'Folge',playlist:'Playlist'};
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(msg,ms){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),ms||2200);}
+function parseTime(s){
+  s=String(s||'').trim(); if(!s) return 0;
+  const hms=s.match(/^(?:(\d+)h)?\s*(?:(\d+)m)?\s*(?:(\d+)s)?$/i);
+  if(hms&&(hms[1]||hms[2]||hms[3])) return (+hms[1]||0)*3600+(+hms[2]||0)*60+(+hms[3]||0);
+  return s.split(/[:.,]/).map(x=>parseInt(x,10)||0).reduce((a,v)=>a*60+v,0);
+}
+function fmt(sec){
+  sec=Math.max(0,Math.round(sec||0));
+  const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
+}
+function ago(ts){
+  if(!ts) return '';
+  const d=(Date.now()-ts)/1000;
+  if(d<60) return 'gerade eben';
+  if(d<3600) return `vor ${Math.floor(d/60)} Min.`;
+  if(d<86400) return `vor ${Math.floor(d/3600)} Std.`;
+  const days=Math.floor(d/86400);
+  if(days===1) return 'gestern';
+  if(days<30) return `vor ${days} Tagen`;
+  return new Date(ts).toLocaleDateString('de-AT');
+}
+function hash(str){let h=0;for(const c of str)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h);}
+function uid(){return 'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+const LS={
+  get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}},
+  del(k){try{localStorage.removeItem(k);}catch(e){}}
+};
+
+/* ================= library ================= */
+let books=LS.get('hr.books',{});
+function persist(){ if(!LS.set('hr.books',books)) toast('Speicher voll – bitte eigene Bilder entfernen oder Einträge löschen',4000); }
+function saveBook(b){ books[b.id]=b; persist(); render(); }
+function removeBook(id){ delete books[id]; persist(); render(); }
+
+/* Position helpers for multi-track items (albums / audiobooks).
+   sp = {uri,type,id,ids:[], durs:[]}  durs in seconds */
+function globalPos(sp,idx,off){ if(!sp||!sp.durs) return off; let s=0; for(let i=0;i<idx&&i<sp.durs.length;i++) s+=sp.durs[i]; return s+off; }
+function trackAt(sp,g){ if(!sp||!sp.durs||!sp.durs.length) return null; let s=0; for(let i=0;i<sp.durs.length;i++){ if(g<s+sp.durs[i]) return {idx:i,off:g-s}; s+=sp.durs[i]; } const L=sp.durs.length-1; return {idx:L,off:sp.durs[L]}; }
+
+/* ================= link parsing ================= */
+function parseLink(raw){
+  const url=String(raw||'').trim(); if(!url) return null;
+  let m=url.match(/^spotify:(album|show|audiobook|episode|track|playlist):([A-Za-z0-9]+)/);
+  if(m) return {platform:'spotify',url:`https://open.spotify.com/${m[1]}/${m[2]}`,spType:m[1],spId:m[2],t:0};
+  let u; try{u=new URL(/^https?:/.test(url)?url:'https://'+url);}catch(e){return null;}
+  const host=u.hostname.replace(/^(www|m|music)\./,'');
+  if(/(^|\.)spotify\.com$/.test(host)){
+    m=u.pathname.match(/\/(album|show|audiobook|episode|track|playlist)\/([A-Za-z0-9]+)/);
+    return {platform:'spotify',url:m?`https://open.spotify.com/${m[1]}/${m[2]}`:u.origin+u.pathname,spType:m?.[1],spId:m?.[2],t:0};
+  }
+  if(host==='spotify.link') return {platform:'spotify',url:u.toString(),t:0};
+  if(/(^|\.)youtube\.com$|^youtu\.be$/.test(host)){
+    let id=null;
+    if(host==='youtu.be') id=u.pathname.slice(1).split('/')[0];
+    else if(u.pathname==='/watch') id=u.searchParams.get('v');
+    else { m=u.pathname.match(/^\/(?:shorts|live|embed)\/([\w-]+)/); if(m) id=m[1]; }
+    const list=u.searchParams.get('list');
+    const t=parseTime(u.searchParams.get('t')||u.searchParams.get('start')||'')||0;
+    const clean=id?`https://www.youtube.com/watch?v=${id}`+(list?`&list=${list}`:''):list?`https://www.youtube.com/playlist?list=${list}`:u.toString();
+    return {platform:'youtube',url:clean,t,videoId:id,list};
+  }
+  return null;
+}
+function ytUrlAt(b){
+  if(!/watch\?v=/.test(b.url)) return b.url;
+  const t=Math.floor(b.pos||0); return b.url.replace(/&t=\d+s?/,'')+(t?`&t=${t}s`:'');
+}
+
+/* ================= metadata for pasted links ================= */
+async function fetchJSON(url,ms=6000){
+  const c=new AbortController(), to=setTimeout(()=>c.abort(),ms);
+  try{ const r=await fetch(url,{signal:c.signal}); if(!r.ok) throw new Error(r.status); return await r.json(); }
+  finally{ clearTimeout(to); }
+}
+async function ytMeta(link){
+  const target=encodeURIComponent(link.url);
+  let d=null;
+  try{ d=await fetchJSON(`https://www.youtube.com/oembed?format=json&url=${target}`); }
+  catch(e){ try{ d=await fetchJSON(`https://noembed.com/embed?url=${target}`,4000); if(d.error) d=null; }catch(e2){ d=null; } }
+  const img=link.videoId?`https://i.ytimg.com/vi/${link.videoId}/hqdefault.jpg`:(d&&d.thumbnail_url)||null;
+  return d||img?{title:d?.title||'',author:d?.author_name||'',img}:null;
+}
+async function spMetaPublic(link){
+  try{ const d=await fetchJSON(`https://open.spotify.com/oembed?url=${encodeURIComponent(link.url)}`); return {title:d.title||'',author:'',img:d.thumbnail_url||null}; }
+  catch(e){ return null; }
+}
+
+/* ================= Spotify (PKCE, direct Web API) ================= */
+const SCOPES='user-read-currently-playing user-read-playback-state user-modify-playback-state user-read-playback-position streaming user-read-email user-read-private';
+const REDIRECT=location.origin+location.pathname;
+const secureOK=location.protocol==='https:'||/^http:\/\/(127\.0\.0\.1|\[::1\])/.test(location.origin);
+let sp={clientId:LS.get('hr.sp.client',''),tok:LS.get('hr.sp.tok',null),user:LS.get('hr.sp.user',null)};
+let autoSync=LS.get('hr.sp.auto',true);
+const connected=()=>!!(sp.tok&&sp.tok.refresh_token&&sp.clientId);
+
+function b64url(buf){return btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+async function spLogin(){
+  if(!sp.clientId){toast('Bitte zuerst die Client ID eintragen');return;}
+  if(!secureOK){toast('Die App muss über https:// oder http://127.0.0.1 geöffnet sein',4000);return;}
+  const arr=new Uint8Array(48); crypto.getRandomValues(arr);
+  const verifier=b64url(arr);
+  const challenge=b64url(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier)));
+  const state=b64url(crypto.getRandomValues(new Uint8Array(12)));
+  sessionStorage.setItem('hr.pkce',JSON.stringify({verifier,state}));
+  const p=new URLSearchParams({client_id:sp.clientId,response_type:'code',redirect_uri:REDIRECT,code_challenge_method:'S256',code_challenge:challenge,scope:SCOPES,state});
+  location.href='https://accounts.spotify.com/authorize?'+p;
+}
+async function tokenRequest(params){
+  const r=await fetch('https://accounts.spotify.com/api/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(params)});
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok) throw Object.assign(new Error(d.error_description||d.error||('HTTP '+r.status)),{data:d});
+  return d;
+}
+function storeToken(d){
+  sp.tok={access_token:d.access_token,refresh_token:d.refresh_token||sp.tok?.refresh_token,expires_at:Date.now()+(d.expires_in-60)*1000,scope:d.scope||sp.tok?.scope||''};
+  LS.set('hr.sp.tok',sp.tok);
+}
+async function handleCallback(){
+  const q=new URLSearchParams(location.search);
+  if(!q.has('code')&&!q.has('error')) return;
+  history.replaceState(null,'',location.pathname+location.hash);
+  if(q.get('error')){toast('Spotify-Anmeldung abgebrochen');return;}
+  let pk={}; try{pk=JSON.parse(sessionStorage.getItem('hr.pkce')||'{}');}catch(e){}
+  sessionStorage.removeItem('hr.pkce');
+  if(!pk.verifier||pk.state!==q.get('state')){toast('Anmeldung ungültig – bitte nochmal verbinden',3500);return;}
+  try{
+    storeToken(await tokenRequest({grant_type:'authorization_code',code:q.get('code'),redirect_uri:REDIRECT,client_id:sp.clientId,code_verifier:pk.verifier}));
+    const me=await api('/me'); sp.user={name:me.display_name||me.id}; LS.set('hr.sp.user',sp.user);
+    toast(`Mit Spotify verbunden${sp.user.name?' als '+sp.user.name:''} ✓`,3000);
+  }catch(e){ toast('Verbindung fehlgeschlagen: '+e.message,5000); }
+}
+let refreshing=null;
+async function accessToken(){
+  if(!connected()) throw new Error('not_connected');
+  if(Date.now()<sp.tok.expires_at) return sp.tok.access_token;
+  if(!refreshing) refreshing=tokenRequest({grant_type:'refresh_token',refresh_token:sp.tok.refresh_token,client_id:sp.clientId})
+    .then(storeToken).catch(e=>{ if(e.data&&e.data.error==='invalid_grant'){ spLogout(true); } throw e; })
+    .finally(()=>{refreshing=null;});
+  await refreshing; return sp.tok.access_token;
+}
+function spLogout(expired){
+  if(P&&P.kind==='sp') pClose();
+  sp.tok=null; sp.user=null; LS.del('hr.sp.tok'); LS.del('hr.sp.user'); stopSync();
+  if(expired) toast('Spotify-Anmeldung abgelaufen – bitte neu verbinden',4000);
+  render(); renderSettings();
+}
+async function api(path,opts={},retry=true){
+  const t=await accessToken();
+  const r=await fetch('https://api.spotify.com/v1'+path,{...opts,headers:{Authorization:'Bearer '+t,...(opts.body?{'Content-Type':'application/json'}:{})}});
+  if(r.status===401&&retry){ sp.tok.expires_at=0; return api(path,opts,false); }
+  if(r.status===204||r.status===202) return null;
+  const d=await r.json().catch(()=>null);
+  if(!r.ok){ const e=new Error(d?.error?.message||('HTTP '+r.status)); e.status=r.status; e.reason=d?.error?.reason; throw e; }
+  return d;
+}
+const bestImg=imgs=>imgs&&imgs.length?(imgs.find(i=>i.width&&i.width>=250&&i.width<=700)||imgs[0]).url:null;
+const names=arr=>(arr||[]).map(a=>a.name).filter(Boolean).join(', ');
+
+async function spSearch(q){
+  const p=new URLSearchParams({q,type:'audiobook,album,show',limit:'8',market:'from_token'});
+  const d=await api('/search?'+p);
+  const out=[];
+  (d.audiobooks?.items||[]).filter(Boolean).forEach(a=>out.push({type:'audiobook',id:a.id,uri:a.uri,title:a.name,author:names(a.authors)||names(a.narrators),img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_chapters?`${a.total_chapters} Kapitel`:''}));
+  (d.albums?.items||[]).filter(Boolean).forEach(a=>out.push({type:'album',id:a.id,uri:a.uri,title:a.name,author:names(a.artists),img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_tracks?`${a.total_tracks} Tracks`:''}));
+  (d.shows?.items||[]).filter(Boolean).forEach(a=>out.push({type:'show',id:a.id,uri:a.uri,title:a.name,author:'',img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_episodes?`${a.total_episodes} Folgen`:''}));
+  return out;
+}
+/* Load track/chapter list (ids + durations) so positions can be shown book-wide. */
+async function spDetails(type,id){
+  const info={type,id,uri:`spotify:${type}:${id}`,ids:[],durs:[]};
+  let first, page;
+  if(type==='album'){ first=await api(`/albums/${id}?market=from_token`); page=first.tracks; info.title=first.name; info.author=names(first.artists); info.img=bestImg(first.images); }
+  else if(type==='audiobook'){ first=await api(`/audiobooks/${id}?market=from_token`); page=first.chapters; info.title=first.name; info.author=names(first.authors)||names(first.narrators); info.img=bestImg(first.images); }
+  else if(type==='show'){ first=await api(`/shows/${id}?market=from_token`); info.title=first.name; info.author=''; info.img=bestImg(first.images); info.url=first.external_urls?.spotify; return info; }
+  else if(type==='episode'){ first=await api(`/episodes/${id}?market=from_token`); info.title=first.name; info.author=first.show?.name||''; info.img=bestImg(first.images); info.ids=[id]; info.durs=[Math.round(first.duration_ms/1000)]; info.resume=first.resume_point; return info; }
+  else return info;
+  info.url=first.external_urls?.spotify;
+  let pages=0;
+  while(page&&pages<40){
+    (page.items||[]).forEach(t=>{ if(t){ info.ids.push(t.id); info.durs.push(Math.round((t.duration_ms||0)/1000)); }});
+    if(!page.next) break;
+    pages++; page=await api(page.next.replace('https://api.spotify.com/v1',''));
+  }
+  return info;
+}
+
+/* ---- now playing ---- */
+async function nowPlaying(){
+  const d=await api('/me/player/currently-playing?additional_types=episode&market=from_token');
+  if(!d||!d.item) return null;
+  const it=d.item;
+  let ctxUri=d.context?.uri||null;
+  // prefer the "container" (album / audiobook / show) as the book identity
+  let cType=null,cId=null,title,author,img;
+  if(it.type==='track'){ cType='album'; cId=it.album?.id; title=it.album?.name; author=names(it.album?.artists)||names(it.artists); img=bestImg(it.album?.images); }
+  else if(it.type==='episode'||it.type==='chapter'){
+    if(it.audiobook){ cType='audiobook'; cId=it.audiobook.id; title=it.audiobook.name; author=names(it.audiobook.authors); img=bestImg(it.audiobook.images||it.images); }
+    else if(ctxUri&&/^spotify:audiobook:/.test(ctxUri)){ cType='audiobook'; cId=ctxUri.split(':')[2]; title=it.show?.name||it.name; img=bestImg(it.images); }
+    else if(it.show){ cType='show'; cId=it.show.id; title=it.show.name; author=it.show.publisher||''; img=bestImg(it.show.images||it.images); }
+  }
+  if(!cId) return null;
+  return {isPlaying:d.is_playing,progress:Math.round((d.progress_ms||0)/1000),item:it,itemName:it.name,itemId:it.id,itemUri:it.uri,
+          trackNo:it.track_number,uri:`spotify:${cType}:${cId}`,type:cType,id:cId,title,author,img,ctxUri,url:`https://open.spotify.com/${cType}/${cId}`};
+}
+function findBookFor(np){ return Object.values(books).find(b=>b.sp&&(b.sp.uri===np.uri||(np.ctxUri&&b.sp.uri===np.ctxUri)||(b.sp.type==='episode'&&b.sp.id===np.itemId))); }
+function applyNowPlaying(b,np){
+  const s=b.sp; let idx=-1;
+  if(s.ids&&s.ids.length){ idx=s.ids.indexOf(np.itemId); }
+  let pos, chapter;
+  if(idx>=0&&s.durs&&s.durs.length>1){ pos=globalPos(s,idx,np.progress); chapter=`Track ${idx+1}/${s.ids.length}: ${np.itemName}`; }
+  else if(s.type==='show'){ pos=np.progress; chapter=`Folge: ${np.itemName}`; }
+  else { pos=np.progress; chapter=b.chapter; }
+  const changed=Math.abs((b.pos||0)-pos)>=5||b.chapter!==chapter;
+  if(!changed) return false;
+  const nb={...b,pos,chapter,last:Date.now(),status:b.status==='done'?'done':'now',
+            sp:{...s,lastItemUri:np.itemUri,lastIdx:idx,lastOff:np.progress}};
+  saveBook(nb); return true;
+}
+async function bookFromNowPlaying(np){
+  let info={type:np.type,id:np.id,uri:np.uri,ids:[],durs:[]};
+  try{ info=await spDetails(np.type,np.id); }catch(e){}
+  const b={id:uid(),title:info.title||np.title||np.itemName,author:info.author||np.author||'',platform:'spotify',url:info.url||np.url,
+    status:'now',pos:0,dur:info.durs.length>1?info.durs.reduce((a,v)=>a+v,0):0,chapter:'',note:'',img:info.img||np.img||null,
+    created:Date.now(),last:Date.now(),sp:{type:info.type,id:info.id,uri:info.uri,ids:info.ids,durs:info.durs}};
+  applyNowPlaying(b,np);
+  if(!books[b.id]) saveBook(b);
+  return books[b.id];
+}
+
+/* ---- auto sync (only while this page is open) ---- */
+let syncTimer=null,lastSync=0,lastNp=null,dismissed=LS.get('hr.dismissed',[]);
+async function syncOnce(manual){
+  if(!connected()) return;
+  if(P&&P.kind==='sp'&&!manual) return; // the player polls itself
+  try{
+    const np=await nowPlaying(); lastSync=Date.now(); lastNp=np;
+    if(!np){ hideBanner(); if(manual) toast('Auf Spotify läuft gerade nichts'); renderSyncLine(); return; }
+    const b=findBookFor(np);
+    if(b){ const ch=applyNowPlaying(b,np); hideBanner(); if(manual) toast(ch?`„${b.title}“ aktualisiert: ${fmt(books[b.id].pos)}`:`„${b.title}“ ist aktuell`); }
+    else if(manual){ const nb=await bookFromNowPlaying(np); toast(`„${nb.title}“ hinzugefügt`); }
+    else if(!dismissed.includes(np.uri)) showBanner(np);
+  }catch(e){
+    if(e.status===429){ toast('Spotify: zu viele Anfragen – kurze Pause'); }
+    else if(e.message!=='not_connected'&&manual) toast('Spotify-Fehler: '+e.message,4000);
+  }
+  renderSyncLine();
+}
+function startSync(){ stopSync(); if(!connected()||!autoSync) return; syncOnce(); syncTimer=setInterval(()=>{ if(document.visibilityState==='visible') syncOnce(); },20000); }
+function stopSync(){ clearInterval(syncTimer); syncTimer=null; renderSyncLine(); }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&syncTimer&&Date.now()-lastSync>5000) syncOnce(); });
+function renderSyncLine(){
+  const el=$('#syncline');
+  if(!connected()){ el.innerHTML=sp.clientId?'<span class="dot"></span>Spotify nicht verbunden':''; return; }
+  el.innerHTML=`<span class="dot ${syncTimer?'on':''}"></span>${syncTimer?'Spotify-Sync aktiv':'Spotify verbunden (Sync aus)'}${lastSync?' · zuletzt geprüft '+new Date(lastSync).toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'}):''}`;
+}
+function showBanner(np){
+  const el=$('#banner');
+  el.innerHTML=`${np.img?`<img src="${esc(np.img)}" alt="">`:''}<div class="bt"><span class="sub">Läuft gerade auf Spotify</span><b>${esc(np.title)}</b><span class="sub">${esc(np.itemName)} · ${fmt(np.progress)}</span></div>
+    <button class="btn sp small" id="bAdd">Ins Regal</button><button class="btn ghost small" id="bNo" title="Nicht mehr fragen">✕</button>`;
+  el.style.display='flex';
+  $('#bAdd').onclick=async()=>{ $('#bAdd').disabled=true; const b=await bookFromNowPlaying(np); hideBanner(); toast(`„${b.title}“ hinzugefügt`); };
+  $('#bNo').onclick=()=>{ dismissed.push(np.uri); dismissed=dismissed.slice(-200); LS.set('hr.dismissed',dismissed); hideBanner(); };
+}
+function hideBanner(){ $('#banner').style.display='none'; }
+
+/* ================= in-app player ================= */
+const ms=s=>Math.max(0,Math.round((s||0)*1000));
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const hasStreaming=()=>!!(sp.tok&&sp.tok.scope&&sp.tok.scope.split(' ').includes('streaming'));
+const RATES=[1,1.25,1.5,1.75,2,0.75];
+const SDKID='__browser';
+const ICO_PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4v16l13-8z"/></svg>';
+const ICO_PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>';
+let P=null;          // current player session
+let sdkObj=null;     // {player,id} once the Spotify Web Playback SDK is ready
+let sdkP=null;
+
+function spPlayBody(b,g){
+  const s=b.sp, body={};
+  if(s.type==='episode'){ body.uris=[s.uri]; body.position_ms=ms(g); }
+  else if(s.type==='show'){ if(s.lastItemUri){ body.uris=[s.lastItemUri]; body.position_ms=ms(g); } else body.context_uri=s.uri; }
+  else {
+    body.context_uri=s.uri;
+    const t=trackAt(s,g);
+    if(t){ body.offset=s.ids&&s.ids[t.idx]?{uri:`spotify:${s.type==='audiobook'?'episode':'track'}:${s.ids[t.idx]}`}:{position:t.idx}; body.position_ms=ms(t.off); }
+    else if(s.lastItemUri){ body.offset={uri:s.lastItemUri}; body.position_ms=ms(s.lastOff!=null?s.lastOff:g); }
+  }
+  return body;
+}
+function openExternal(b){ const u=b.platform==='youtube'?ytUrlAt(b):b.url; if(u) window.open(u,'_blank','noopener'); }
+
+/* ---- Spotify Web Playback SDK (plays inside this browser tab; desktop only) ---- */
+function initSdk(){
+  if(sdkP) return sdkP;
+  sdkP=new Promise(res=>{
+    if(isMobile||!connected()||!hasStreaming()) return res(null);
+    let done=false; const finish=v=>{ if(!done){ done=true; if(v) sdkObj=v; res(v); } };
+    setTimeout(()=>finish(null),12000);
+    window.onSpotifyWebPlaybackSDKReady=()=>{
+      try{
+        const pl=new window.Spotify.Player({name:'Hörregal',getOAuthToken:cb=>{accessToken().then(cb).catch(()=>{});},volume:0.9});
+        pl.addListener('ready',({device_id})=>finish({player:pl,id:device_id}));
+        pl.addListener('not_ready',()=>{});
+        ['initialization_error','authentication_error','account_error'].forEach(ev=>pl.addListener(ev,({message})=>{ console.warn('Spotify SDK',ev,message); finish(null); }));
+        pl.addListener('playback_error',({message})=>{ console.warn('playback_error',message); });
+        pl.addListener('player_state_changed',s=>{ if(P&&P.kind==='sp'&&P.dev===SDKID) onSpState(fromSdk(s)); });
+        pl.connect().then(ok=>{ if(!ok) finish(null); });
+      }catch(e){ finish(null); }
+    };
+    const sc=document.createElement('script'); sc.src='https://sdk.scdn.co/spotify-player.js'; sc.onerror=()=>finish(null); document.head.appendChild(sc);
+  });
+  return sdkP;
+}
+function fromSdk(s){
+  if(!s) return null; const t=s.track_window&&s.track_window.current_track;
+  return {paused:s.paused,progress:s.position/1000,itemId:t&&t.id,itemUri:t&&t.uri,itemName:t&&t.name,itemDur:(t&&t.duration_ms||0)/1000,ctxUri:s.context&&s.context.uri};
+}
+function fromApi(d){
+  if(!d||!d.item) return d?{paused:true,none:true}:null;
+  return {paused:!d.is_playing,progress:(d.progress_ms||0)/1000,itemId:d.item.id,itemUri:d.item.uri,itemName:d.item.name,itemDur:(d.item.duration_ms||0)/1000,ctxUri:d.context&&d.context.uri,deviceId:d.device&&d.device.id};
+}
+const devQ=(pre)=>P&&P.dev&&P.dev!==SDKID?`${pre}device_id=${encodeURIComponent(P.dev)}`:(P&&P.dev===SDKID&&sdkObj?`${pre}device_id=${encodeURIComponent(sdkObj.id)}`:'');
+const spMulti=b=>!!(b.sp&&b.sp.durs&&b.sp.durs.length>1);
+const spTotal=b=>spMulti(b)?b.sp.durs.reduce((a,v)=>a+v,0):(b.dur||0);
+
+function onSpState(st){
+  if(!P||P.kind!=='sp'||!st) return;
+  const b=books[P.id]; if(!b) return;
+  if(st.none){ if(Date.now()-P.cmdAt>4000&&P.playing){ P.g=pNow(); P.playing=false; pSave(true); } updateBar(); return; }
+  const s=b.sp||{};
+  const idx=s.ids?s.ids.indexOf(st.itemId):-1;
+  const mine=idx>=0||(st.ctxUri&&st.ctxUri===s.uri)||(s.type==='episode'&&st.itemId===s.id)||(P.expectItem&&st.itemUri===P.expectItem)||(s.type==='show'&&P.started&&!st.ctxUri&&st.itemUri&&/:episode:/.test(st.itemUri)&&st.itemUri===P.itemUri);
+  if(!mine){
+    if(Date.now()-P.cmdAt<5000) return;           // still switching
+    if(!P.foreign&&P.playing){ P.g=pNow(); pSave(true); }
+    P.foreign=true; P.playing=!st.paused; updateBar(); return;
+  }
+  if(Date.now()-P.cmdAt<1500&&P.pendingSeek) return; // ignore stale state right after a seek
+  P.pendingSeek=false;
+  P.foreign=false; P.started=true;
+  P.itemName=st.itemName; P.itemUri=st.itemUri; P.itemDur=st.itemDur; P.idx=idx;
+  const multi=spMulti(b)&&idx>=0;
+  P.g=multi?globalPos(s,idx,st.progress):st.progress; P.t0=Date.now();
+  P.total=multi?spTotal(b):(st.itemDur||P.total);
+  const was=P.playing; P.playing=!st.paused;
+  if(was&&!P.playing) pSave(true);
+  updateBar();
+}
+
+async function spCall(fn){
+  try{ return await fn(); }
+  catch(e){
+    if(e.status===404){ toast('Kein aktives Spotify-Gerät – wähle unten ein Gerät oder öffne Spotify',4500); loadDevices(); }
+    else if(e.status===403){ toast('Diese Aktion erlaubt Spotify gerade nicht (Premium nötig?)',4000); }
+    else if(e.status===429){ toast('Spotify: zu viele Anfragen – kurz warten'); }
+    else toast('Spotify: '+e.message,4000);
+    throw e;
+  }
+}
+async function spStart(b,g){
+  const body=spPlayBody(b,g);
+  P.expectItem=(body.offset&&body.offset.uri)||(body.uris&&body.uris[0])||null;
+  P.cmdAt=Date.now(); P.g=g; P.t0=Date.now();
+  // know the current track right away (Spotify reports its state only a few seconds later)
+  if(spMulti(b)){ const t=trackAt(b.sp,g); if(t){ P.idx=t.idx; P.itemUri=P.expectItem; } }
+  if(P.dev===SDKID&&sdkObj){ try{ sdkObj.player.activateElement(); }catch(e){} }
+  const put=()=>api('/me/player/play'+devQ('?'),{method:'PUT',body:JSON.stringify(body)});
+  try{ await put(); }
+  catch(e){
+    if(e.status===400&&body.offset&&body.offset.uri&&b.sp.type==='audiobook'){ const t=trackAt(b.sp,g); body.offset={position:t?t.idx:0}; await spCall(put); }
+    else { toast(e.status===404?'Gerät nicht erreichbar – öffne Spotify oder wähle ein anderes Gerät':'Spotify: '+e.message,4500); if(e.status===404) loadDevices(); throw e; }
+  }
+  P.playing=true; P.started=true; P.foreign=false; updateBar();
+}
+async function loadDevices(){
+  if(!P||P.kind!=='sp') return;
+  let list=[]; try{ const d=await api('/me/player/devices'); list=(d&&d.devices)||[]; }catch(e){}
+  if(!P) return;
+  const opts=[];
+  if(sdkObj) opts.push({id:SDKID,name:'🎧 Hier im Browser'});
+  list.filter(d=>!(sdkObj&&d.id===sdkObj.id)&&!d.is_restricted).forEach(d=>opts.push({id:d.id,name:(d.type==='Smartphone'?'📱 ':'💻 ')+d.name+(d.is_active?' (aktiv)':'')}));
+  if(!P.dev||!opts.some(o=>o.id===P.dev)){
+    P.dev=(opts.find(o=>o.id===SDKID)||opts.find((o,i)=>list.find(d=>d.id===o.id&&d.is_active))||opts[0]||{}).id||null;
+  }
+  const sel=$('#pDev');
+  sel.innerHTML=opts.map(o=>`<option value="${esc(o.id)}" ${o.id===P.dev?'selected':''}>${esc(o.name)}</option>`).join('')+
+    `<option value="__reload">↻ Geräte neu suchen</option>`;
+  if(!opts.length) sel.insertAdjacentHTML('afterbegin','<option value="" selected>Kein Gerät gefunden</option>');
+  return P.dev;
+}
+
+/* ---- YouTube IFrame API ---- */
+let ytApiP=null;
+function loadYT(){
+  if(ytApiP) return ytApiP;
+  ytApiP=new Promise((res,rej)=>{
+    if(window.YT&&window.YT.Player) return res();
+    const prev=window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady=()=>{ if(prev) try{prev();}catch(e){} res(); };
+    const s=document.createElement('script'); s.src='https://www.youtube.com/iframe_api';
+    s.onerror=()=>{ ytApiP=null; rej(new Error('YouTube nicht erreichbar')); };
+    document.head.appendChild(s);
+    setTimeout(()=>{ if(!(window.YT&&window.YT.Player)){ ytApiP=null; rej(new Error('YouTube lädt nicht')); } },15000);
+  });
+  return ytApiP;
+}
+function ytState(e){
+  if(!P||P.kind!=='yt') return;
+  const S=window.YT.PlayerState;
+  if(e.data===S.PLAYING){ P.playing=true; P.started=true; }
+  else if(e.data===S.PAUSED||e.data===S.ENDED){
+    const was=P.playing; P.playing=false; ytRead(); if(was||e.data===S.ENDED) pSave(true);
+    if(e.data===S.ENDED&&!P.list){ const b=books[P.id]; if(b){ books[b.id]={...b,status:'done'}; persist(); render(); toast('Fertig gehört 🎉'); } }
+  }
+  updateBar();
+}
+function ytErr(e){
+  if(!P||P.kind!=='yt') return;
+  const b=books[P.id];
+  if(e.data===101||e.data===150){ toast('Dieses Video darf nicht eingebettet werden – öffne YouTube',4500); pClose(); if(b) openExternal(b); }
+  else if(e.data===100){ toast('Video nicht gefunden (gelöscht oder privat)',4000); }
+  else toast('YouTube-Fehler '+e.data);
+}
+function ytRead(){
+  if(!P||!P.yt||typeof P.yt.getCurrentTime!=='function') return;
+  try{
+    const t=P.yt.getCurrentTime(); if(typeof t==='number'&&!isNaN(t)){ P.g=t; P.t0=Date.now(); }
+    const d=P.yt.getDuration(); if(d>0) P.total=d;
+    if(P.list){ const i=P.yt.getPlaylistIndex(); if(i>=0) P.idx=i; }
+    const vd=P.yt.getVideoData&&P.yt.getVideoData(); if(vd&&vd.title) P.itemName=vd.title;
+  }catch(e){}
+}
+
+/* ---- session ---- */
+function pNow(){ if(!P) return 0; let g=P.g||0; if(P.playing&&!P.foreign&&P.kind==='sp') g+=(Date.now()-P.t0)/1000; return Math.max(0,P.total?Math.min(g,P.total):g); }
+function pSave(force){
+  if(!P||P.foreign||!P.started) return;
+  const b=books[P.id]; if(!b) return;
+  const g=Math.round(pNow());
+  const nb={...b,pos:g,last:Date.now()};
+  if(P.kind==='sp'){
+    const s=b.sp||{};
+    if(spMulti(b)&&P.idx>=0) nb.chapter=`Track ${P.idx+1}/${s.durs.length}${P.itemName?': '+P.itemName:''}`;
+    else if(s.type==='show'&&P.itemName) nb.chapter=`Folge: ${P.itemName}`;
+    if(P.itemUri) nb.sp={...s,lastItemUri:P.itemUri,lastIdx:P.idx,lastOff:spMulti(b)&&P.idx>=0?g-globalPos(s,P.idx,0):g};
+    if(spMulti(b)) nb.dur=spTotal(b);
+  } else {
+    if(P.list){ nb.ytIdx=P.idx||0; nb.chapter=`Video ${(P.idx||0)+1}${P.itemName?': '+P.itemName:''}`; }
+    else if(P.total>0&&!b.dur) nb.dur=Math.round(P.total);
+  }
+  if(nb.status!=='done'||P.playing) nb.status=(nb.dur&&g>=nb.dur-5)?'done':'now';
+  const changed=Math.abs((b.pos||0)-g)>=2||nb.chapter!==b.chapter||nb.status!==b.status||nb.dur!==b.dur;
+  if(!changed&&!force) return;
+  books[b.id]=nb; persist();
+  if(force||Date.now()-(pSave._r||0)>15000){ pSave._r=Date.now(); render(); }
+}
+function showBar(on){
+  $('#pbar').classList.toggle('open',on); document.body.classList.toggle('playing',on);
+  $('#ytWrap').classList.toggle('open',!!(on&&P&&P.kind==='yt'));
+}
+let dragging=false;
+function updateBar(){
+  if(!P) return;
+  const b=books[P.id]; if(!b) return;
+  const playState=P.playing&&!P.foreign;
+  if(playState!==P._shown){ P._shown=playState;
+    if(playState&&b.status!=='now'){ books[b.id]={...b,status:'now',last:Date.now()}; persist(); }
+    render(); }
+  if(P._covFor!==b.img+b.title){ P._covFor=b.img+b.title; $('#pCov').innerHTML=coverHTML(b); }
+  $('#pTitle').textContent=b.title;
+  const g=pNow();
+  let sub;
+  if(P.foreign) sub='Spotify spielt gerade etwas anderes – ▶ setzt dein Hörbuch fort';
+  else if(P.kind==='sp'&&spMulti(b)&&P.idx>=0) sub=`Track ${P.idx+1}/${b.sp.durs.length}${P.itemName?' · '+P.itemName:''}`;
+  else if(P.kind==='yt'&&P.list) sub=`Video ${(P.idx||0)+1}${P.itemName?' · '+P.itemName:''}`;
+  else sub=P.itemName||(P.kind==='yt'?'YouTube':'Spotify');
+  if(P.status) sub=P.status;
+  $('#pSub').textContent=sub;
+  $('#pPlay').innerHTML=P.playing&&!P.foreign?ICO_PAUSE:ICO_PLAY;
+  const total=P.total||0;
+  const seek=$('#pSeek');
+  seek.max=String(Math.max(1,Math.round(total||g+1)));
+  if(!dragging){ seek.value=String(Math.round(g)); $('#pCur').textContent=fmt(g); }
+  $('#pDur').textContent=total?fmt(total):'--:--';
+  seek.disabled=!total;
+  const hasTracks=(P.kind==='sp'&&(spMulti(b)||(b.sp&&b.sp.type==='show')))||(P.kind==='yt'&&P.list);
+  $('#pPrev').style.visibility=hasTracks?'visible':'hidden';
+  $('#pNext').style.visibility=hasTracks?'visible':'hidden';
+  $('#pDev').style.display=P.kind==='sp'?'':'none';
+  $('#pRate').style.display=P.kind==='yt'?'':'none';
+  $('#pRate').textContent=String(P.rate||1).replace('.',',')+'×';
+  const left=sleepAt?Math.max(0,Math.ceil((sleepAt-Date.now())/60000)):0;
+  $('#pSleep').textContent=sleepAt?`☾ ${left}′`:'☾';
+  $('#pSleep').classList.toggle('sp',!!sleepAt);
+}
+/* sleep timer: off → 15 → 30 → 45 → 60 → off */
+let sleepAt=0;
+const SLEEPS=[0,15,30,45,60];
+function cycleSleep(){
+  const cur=sleepAt?Math.ceil((sleepAt-Date.now())/60000):0;
+  const next=SLEEPS.find(m=>m>cur+1)||0;
+  sleepAt=next?Date.now()+next*60000:0;
+  toast(next?`Schlaftimer: stoppt in ${next} Minuten`:'Schlaftimer aus');
+  updateBar();
+}
+function checkSleep(){
+  if(sleepAt&&Date.now()>=sleepAt){ sleepAt=0; if(P&&P.playing&&!P.foreign){ pToggle(); toast('Schlaftimer: gestoppt – Stand gespeichert 🌙',4000); } updateBar(); }
+}
+
+let tickT=null,pollT=null;
+function startTimers(){
+  stopTimers();
+  tickT=setInterval(()=>{
+    if(!P) return;
+    if(P.kind==='yt') ytRead();
+    checkSleep();
+    updateBar();
+    if(P.playing&&Date.now()-(P.savedAt||0)>5000){ P.savedAt=Date.now(); pSave(false); }
+  },500);
+  pollT=setInterval(async()=>{
+    if(!P||P.kind!=='sp'||document.visibilityState!=='visible') return;
+    try{
+      if(P.dev===SDKID&&sdkObj){ onSpState(fromSdk(await sdkObj.player.getCurrentState())); }
+      else onSpState(fromApi(await api('/me/player?additional_types=episode')));
+    }catch(e){}
+  },P&&P.dev===SDKID?2000:4000);
+}
+function stopTimers(){ clearInterval(tickT); clearInterval(pollT); tickT=pollT=null; }
+
+async function pOpen(b){
+  if(!b) return;
+  if(P&&P.id===b.id){ if(!P.playing||P.foreign) pToggle(); return; }
+  if(P) await pClose();
+  if(b.platform==='youtube') return ytOpen(b);
+  if(!connected()){ toast('Zum Abspielen in der App zuerst Spotify verbinden (⚙︎) – öffne Spotify',4000); openExternal(b); return; }
+  if(sdkObj){ try{ sdkObj.player.activateElement(); }catch(e){} }   // must happen inside the click
+  let book=b;
+  if(!book.sp){
+    const L=parseLink(book.url);
+    if(L&&L.spId){ try{ const d=await spDetails(L.spType,L.spId); book={...book,sp:{type:d.type,id:d.id,uri:d.uri,ids:d.ids,durs:d.durs}}; saveBook(book); }catch(e){} }
+    if(!book.sp){ toast('Für diesen Eintrag fehlt ein Spotify-Link'); return; }
+  }
+  P={id:book.id,kind:'sp',g:book.pos||0,t0:Date.now(),playing:false,cmdAt:0,idx:-1,total:spTotal(book),status:'Verbinde mit Spotify …'};
+  showBar(true); updateBar(); startTimers();
+  await initSdk();
+  if(!P||P.id!==book.id) return;
+  await loadDevices();
+  P.status=null;
+  if(!P.dev){ P.status='Kein Spotify-Gerät gefunden – öffne Spotify auf Handy/PC, dann ↻'; updateBar(); return; }
+  startTimers(); // poll interval depends on device
+  try{ await spStart(books[book.id],book.pos||0); }catch(e){}
+  updateBar();
+}
+async function ytOpen(b){
+  const L=parseLink(b.url);
+  if(!L||(!L.videoId&&!L.list)){ toast('Kein gültiger YouTube-Link'); return; }
+  P={id:b.id,kind:'yt',g:b.pos||0,t0:Date.now(),playing:false,rate:LS.get('hr.rate',1),total:b.dur||0,list:L.list||null,idx:b.ytIdx||0,status:'Lade YouTube …'};
+  showBar(true); updateBar(); startTimers();
+  try{ await loadYT(); }catch(e){ toast(e.message+' – öffne YouTube',4000); pClose(); openExternal(b); return; }
+  if(!P||P.id!==b.id) return;
+  $('#ytWrap').innerHTML='<div id="ytPlayer"></div>';
+  const vars={playsinline:1,autoplay:1,rel:0,start:Math.floor(b.pos||0)};
+  const opts={width:'100%',height:'100%',playerVars:vars,events:{
+    onReady:e=>{ if(!P||P.kind!=='yt') return; P.status=null; try{ e.target.setPlaybackRate(P.rate); }catch(x){}
+      if(P.list&&!opts.videoId){ e.target.loadPlaylist({list:P.list,listType:'playlist',index:P.idx||0,startSeconds:Math.floor(b.pos||0)}); } else e.target.playVideo();
+      updateBar(); },
+    onStateChange:ytState, onError:ytErr }};
+  // a single video, or the video the link points to inside a playlist (first play) → start there
+  if(L.videoId&&(!L.list||b.ytIdx==null)){ opts.videoId=L.videoId; if(L.list){ vars.list=L.list; vars.listType='playlist'; } }
+  P.yt=new window.YT.Player('ytPlayer',opts);
+}
+async function pToggle(){
+  if(!P) return;
+  if(P.kind==='yt'){ if(!P.yt||!P.yt.getPlayerState) return; P.playing?P.yt.pauseVideo():P.yt.playVideo(); return; }
+  const b=books[P.id];
+  if(!P.dev){ await loadDevices(); if(!P.dev){ toast('Kein Spotify-Gerät gefunden'); return; } }
+  if(P.foreign||!P.started){ try{ await spStart(b,P.foreign?(b.pos||0):pNow()); }catch(e){} return; }
+  P.cmdAt=Date.now();
+  if(P.playing){
+    P.g=pNow(); P.playing=false; updateBar(); pSave(true);
+    try{ if(P.dev===SDKID&&sdkObj) await sdkObj.player.pause(); else await spCall(()=>api('/me/player/pause'+devQ('?'),{method:'PUT'})); }catch(e){}
+  } else {
+    P.playing=true; P.t0=Date.now(); updateBar();
+    try{ if(P.dev===SDKID&&sdkObj){ sdkObj.player.activateElement(); await sdkObj.player.resume(); } else await spCall(()=>api('/me/player/play'+devQ('?'),{method:'PUT'})); }
+    catch(e){ P.playing=false; updateBar(); }
+  }
+}
+async function pSeek(g){
+  if(!P) return;
+  g=Math.max(0,P.total?Math.min(g,P.total-1):g);
+  if(P.kind==='yt'){ if(P.yt&&P.yt.seekTo){ P.yt.seekTo(g,true); P.g=g; P.t0=Date.now(); updateBar(); pSave(true); } return; }
+  const b=books[P.id], s=b.sp;
+  if(P.foreign||!P.started){ try{ await spStart(b,g); }catch(e){} pSave(true); return; }
+  let off=g;
+  if(spMulti(b)&&P.idx>=0){
+    const t=trackAt(s,g);
+    if(t.idx!==P.idx){ const was=P.playing; try{ await spStart(b,g); if(!was) setTimeout(()=>{ if(P&&P.playing) pToggle(); },900); }catch(e){} pSave(true); return; }
+    off=t.off;
+  }
+  P.cmdAt=Date.now(); P.pendingSeek=true; P.g=g; P.t0=Date.now(); updateBar();
+  try{
+    if(P.dev===SDKID&&sdkObj) await sdkObj.player.seek(ms(off));
+    else await spCall(()=>api(`/me/player/seek?position_ms=${ms(off)}`+devQ('&'),{method:'PUT'}));
+  }catch(e){}
+  pSave(true);
+}
+async function pSkip(dir){
+  if(!P) return;
+  const b=books[P.id];
+  if(P.kind==='yt'){ if(!P.yt) return; if(dir<0&&pNow()>3) P.yt.seekTo(0,true); else dir<0?P.yt.previousVideo():P.yt.nextVideo(); return; }
+  if(spMulti(b)&&P.idx>=0){
+    const s=b.sp, start=globalPos(s,P.idx,0);
+    let i=dir<0?(pNow()-start>3?P.idx:P.idx-1):P.idx+1;
+    i=Math.max(0,Math.min(i,s.durs.length-1));
+    return pSeek(globalPos(s,i,0));
+  }
+  P.cmdAt=Date.now();
+  try{
+    if(P.dev===SDKID&&sdkObj) await (dir<0?sdkObj.player.previousTrack():sdkObj.player.nextTrack());
+    else await spCall(()=>api('/me/player/'+(dir<0?'previous':'next')+devQ('?'),{method:'POST'}));
+  }catch(e){}
+}
+async function pClose(){
+  if(!P) return;
+  const cur=P;
+  if(cur.playing&&!cur.foreign){
+    cur.g=pNow(); pSave(true);
+    try{
+      if(cur.kind==='yt'&&cur.yt) cur.yt.pauseVideo();
+      else if(cur.kind==='sp'){ if(cur.dev===SDKID&&sdkObj) await sdkObj.player.pause(); else await api('/me/player/pause'+devQ('?'),{method:'PUT'}); }
+    }catch(e){}
+  } else pSave(true);
+  stopTimers();
+  if(cur.yt&&cur.yt.destroy){ try{ cur.yt.destroy(); }catch(e){} }
+  $('#ytWrap').innerHTML='<div id="ytPlayer"></div>';
+  P=null; showBar(false); render();
+}
+
+/* ================= rendering ================= */
+const PALETTES=[["#c2552f","#f2a65a"],["#2f5d62","#7fb7a4"],["#5b3a8a","#c38dd8"],["#8a2f45","#e58a8a"],["#2b4a7e","#7aa4e0"],["#6a5a1f","#d9c063"],["#33443a","#9cbf8a"],["#7a3d1c","#d98c4c"]];
+function genCover(b){ const p=PALETTES[hash(b.title||'?')%PALETTES.length];
+  return `<div class="gen" style="background:linear-gradient(150deg,${p[0]},${p[1]})"><div class="gt">${esc(b.title||'Ohne Titel')}</div><div style="font-family:Inter;font-weight:500;font-size:12px;opacity:.85;margin-top:6px">${esc(b.author||'')}</div></div>`; }
+function coverHTML(b){
+  const badge=`<div class="badge">${ICON[b.platform]||''}${PNAME[b.platform]||''}</div>`;
+  const st=b.status?`<div class="status ${b.status}">${SNAME[b.status]}</div>`:'';
+  const inner=b.img?`<img class="ci" alt="" src="${esc(b.img)}" referrerpolicy="no-referrer" data-t="${esc(b.title||'')}" data-a="${esc(b.author||'')}">`:genCover(b);
+  return inner+badge+st;
+}
+document.addEventListener('error',e=>{ const t=e.target; if(t.tagName==='IMG'&&t.classList.contains('ci')){ t.outerHTML=genCover({title:t.dataset.t,author:t.dataset.a}); } },true);
+
+let fStatus='all',fPlat='all',q='';
+const sorted=()=>Object.values(books).sort((a,b)=>(b.last||b.created||0)-(a.last||a.created||0));
+const progress=b=>b.dur?Math.min(100,Math.round((b.pos||0)/b.dur*100)):(b.status==='done'?100:0);
+function render(){
+  const all=sorted();
+  const cnt=s=>all.filter(b=>b.status===s).length;
+  $('#statusChips').innerHTML=[['all',`Alle (${all.length})`],['now',`Höre gerade (${cnt('now')})`],['later',`Später (${cnt('later')})`],['done',`Fertig (${cnt('done')})`]]
+    .map(([k,l])=>`<button class="chip ${fStatus===k?'on':''}" data-s="${k}">${l}</button>`).join('');
+  $('#platChips').innerHTML=[['all','Alle Quellen'],['spotify','Spotify'],['youtube','YouTube']]
+    .map(([k,l])=>`<button class="chip ${fPlat===k?'on':''}" data-p="${k}">${l}</button>`).join('');
+  $('#stats').textContent=all.length?`${all.length} Hörbücher · ${cnt('now')} laufend · ${cnt('done')} fertig`:'Deine Hörbücher von Spotify & YouTube';
+  $('#nowBtn').style.display=connected()?'':'none';
+
+  const h=all.find(b=>b.status==='now'), hero=$('#hero');
+  if(h){
+    const pct=progress(h);
+    hero.style.display='flex';
+    hero.innerHTML=`<div class="cover">${coverHTML(h)}</div>
+      <div style="flex:1;min-width:0">
+        <div class="label">Weiterhören</div>
+        <h2>${esc(h.title)}</h2>
+        <div class="sub">${esc(h.author||'')}${h.author&&h.chapter?' · ':''}${esc(h.chapter||'')}</div>
+        <div class="sub" style="margin-top:6px">Aufgehört bei <b style="color:var(--ink)">${fmt(h.pos)}</b>${h.dur?` von ${fmt(h.dur)} (${pct} %)`:''} · ${ago(h.last)}</div>
+        ${h.dur?`<div class="bar" style="margin-top:8px;max-width:380px"><i style="width:${pct}%"></i></div>`:''}
+        <div class="actions">
+          ${h.url?`<button class="btn ${h.platform==='spotify'?'sp':'primary'}" data-play="${esc(h.id)}">${h.platform==='spotify'?ICON.spotifyBlack:ICON.youtube} ${P&&P.id===h.id?'Läuft …':'Weiterhören ab '+fmt(h.pos)}</button>`:''}
+          <button class="btn" data-edit="${esc(h.id)}">Bearbeiten</button>
+        </div>
+      </div>`;
+  } else hero.style.display='none';
+
+  const list=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(fPlat==='all'||b.platform===fPlat)&&(!q||(b.title+' '+(b.author||'')).toLowerCase().includes(q)));
+  $('#grid').innerHTML=list.map(b=>`<article class="card" data-edit="${esc(b.id)}" tabindex="0">
+      <div class="cover">${coverHTML(b)}${b.url?`<button class="cplay" data-play="${esc(b.id)}" title="Abspielen ab ${fmt(b.pos)}" aria-label="Abspielen">${P&&P.id===b.id&&P.playing?ICO_PAUSE:ICO_PLAY}</button>`:''}</div>
+      <div class="body">
+        <div class="t">${esc(b.title)}</div>
+        <div class="a">${esc(b.author||b.chapter||'')}</div>
+        <div class="pos"><span>⏱ ${fmt(b.pos)}${b.dur?' / '+fmt(b.dur):''}</span><span>${ago(b.last)}</span></div>
+        ${b.dur?`<div class="bar"><i style="width:${progress(b)}%"></i></div>`:''}
+      </div></article>`).join('');
+  const eb=$('#emptyBox');
+  if(!all.length) eb.innerHTML=`<div class="empty"><h3>Dein Regal ist noch leer</h3>
+      ${connected()?'Starte ein Hörbuch auf Spotify – es taucht hier automatisch als Vorschlag auf.<br>Oder suche direkt danach.':'Füge einen Link aus Spotify oder YouTube ein, oder verbinde Spotify in den Einstellungen ⚙︎.'}
+      <div style="margin-top:16px"><button class="btn primary" data-add>＋ Erstes Hörbuch hinzufügen</button></div></div>`;
+  else eb.innerHTML=list.length?'':'<div class="empty">Nichts gefunden für diesen Filter.</div>';
+  renderSyncLine();
+}
+
+/* ================= add / edit modal ================= */
+let editing=null,curImg=null,curSp=null;
+function setDetected(){
+  const info=parseLink($('#fUrl').value),d=$('#detected');
+  d.innerHTML=info?`${ICON[info.platform]} <span>${PNAME[info.platform]} erkannt${info.t?` · Zeitmarke ${fmt(info.t)} übernommen`:''}</span>`:($('#fUrl').value.trim()?'<span style="color:#ff8a80">Kein Spotify- oder YouTube-Link erkannt</span>':'');
+  return info;
+}
+function refreshCover(){
+  $('#fCover').innerHTML=coverHTML({title:$('#fTitle').value||'Titel',author:$('#fAuthor').value,platform:$('#fPlat').value,img:curImg});
+  $('#rmImg').style.display=curImg?'':'none';
+}
+function updateChapterFromPos(){
+  if(!curSp||!curSp.durs||curSp.durs.length<2) return;
+  const t=trackAt(curSp,parseTime($('#fPos').value));
+  if(t) $('#fChapter').value=`Track ${t.idx+1}/${curSp.durs.length} · ${fmt(t.off)}`;
+}
+function spHintText(){
+  if(connected()) return 'Tipp: Viele deutsche Hörbücher sind auf Spotify als „Album“ eingestellt.';
+  return 'Spotify-Suche: zuerst in den Einstellungen ⚙︎ verbinden.';
+}
+function openModal(b,prefill){
+  editing=b?b.id:null; curSp=b?.sp||null;
+  $('#mTitle').textContent=b?'Hörbuch bearbeiten':'Neues Hörbuch';
+  $('#delBtn').style.display=b?'':'none';
+  $('#spBox').style.display=b?'none':'';
+  $('#spQ').value=''; $('#spRes').innerHTML=''; $('#spHint').textContent=spHintText();
+  $('#spQ').disabled=$('#spGo').disabled=!connected();
+  $('#fUrl').value=b?.url||prefill||'';
+  $('#fTitle').value=b?.title||''; $('#fAuthor').value=b?.author||'';
+  $('#fStatus').value=b?.status||'now';
+  $('#fPos').value=b?fmt(b.pos):''; $('#fDur').value=b?.dur?fmt(b.dur):'';
+  $('#fChapter').value=b?.chapter||''; $('#fNote').value=b?.note||'';
+  curImg=b?.img||null;
+  const info=setDetected();
+  $('#fPlat').value=b?.platform||info?.platform||'spotify';
+  if(!b&&info?.t) $('#fPos').value=fmt(info.t);
+  $('#openBtn').style.display=$('#extBtn').style.display=b&&b.url?'':'none';
+  refreshCover();
+  $('#ov').classList.add('open');
+  setTimeout(()=>{ (b?$('#fPos'):prefill?$('#fTitle'):connected()?$('#spQ'):$('#fUrl')).focus(); },30);
+  if(!b&&prefill) enrichFromLink();
+}
+function closeModal(){ $('#ov').classList.remove('open'); editing=null; curSp=null; }
+
+let enrichSeq=0, enriching=null;
+function enrichFromLink(){
+  const p=enrichInner().catch(()=>{}).finally(()=>{ if(enriching===p) enriching=null; });
+  enriching=p; return p;
+}
+function setLoadState(state){
+  const d=$('#detected'), info=parseLink($('#fUrl').value); if(!info) return;
+  const base=`${ICON[info.platform]} <span>${PNAME[info.platform]} erkannt`;
+  if(state==='loading') d.innerHTML=base+' · lade Titel &amp; Bild …</span>';
+  else if(state==='ok') d.innerHTML=base+' · Titel &amp; Bild übernommen ✓</span>';
+  else if(state==='fail') d.innerHTML=base+'</span> <span style="color:#f0b36a">· Titel konnte nicht geladen werden – bitte selbst eintragen</span>';
+}
+async function enrichInner(){
+  const info=parseLink($('#fUrl').value); if(!info) return;
+  const seq=++enrichSeq;
+  setLoadState('loading');
+  let meta=null;
+  if(info.platform==='youtube') meta=await ytMeta(info);
+  else if(connected()&&info.spType&&['album','audiobook','show','episode'].includes(info.spType)){
+    try{ const d=await spDetails(info.spType,info.spId); meta={title:d.title,author:d.author,img:d.img};
+      curSp={type:d.type,id:d.id,uri:d.uri,ids:d.ids,durs:d.durs};
+      if(d.durs.length>1&&!parseTime($('#fDur').value)) $('#fDur').value=fmt(d.durs.reduce((a,v)=>a+v,0));
+      if(d.resume&&d.resume.resume_position_ms&&!parseTime($('#fPos').value)) $('#fPos').value=fmt(d.resume.resume_position_ms/1000);
+    }catch(e){ meta=await spMetaPublic(info); }
+  } else meta=await spMetaPublic(info);
+  if(seq!==enrichSeq) return;
+  setLoadState(meta&&meta.title?'ok':'fail');
+  if(!meta) return;
+  if(meta.title&&!$('#fTitle').value.trim()) $('#fTitle').value=meta.title;
+  if(meta.author&&!$('#fAuthor').value.trim()) $('#fAuthor').value=meta.author;
+  if(meta.img&&!curImg) curImg=meta.img;
+  refreshCover();
+}
+
+async function runSearch(){
+  const qq=$('#spQ').value.trim(); if(!qq) return;
+  $('#spRes').innerHTML='<div class="hint">Suche …</div>';
+  try{
+    const res=await spSearch(qq);
+    if(!res.length){ $('#spRes').innerHTML='<div class="hint">Keine Treffer. Andere Schreibweise oder den Autor probieren.</div>'; return; }
+    $('#spRes').innerHTML=res.map((r,i)=>`<button type="button" class="res" data-i="${i}">
+        ${r.img?`<img src="${esc(r.img)}" alt="">`:'<span class="ph"></span>'}
+        <span class="rt"><b>${esc(r.title)}</b><span>${esc([r.author,r.extra].filter(Boolean).join(' · '))}</span></span>
+        <span class="tag">${TYPENAME[r.type]}</span></button>`).join('');
+    $('#spRes').querySelectorAll('.res').forEach(el=>el.onclick=()=>pickResult(res[+el.dataset.i]));
+  }catch(e){ $('#spRes').innerHTML=`<div class="hint" style="color:#ff8a80">Suche fehlgeschlagen: ${esc(e.message)}</div>`; }
+}
+async function pickResult(r){
+  const dup=Object.values(books).find(b=>b.sp&&b.sp.uri===r.uri);
+  if(dup){ toast('Schon im Regal – öffne Eintrag'); closeModal(); openModal(dup); return; }
+  $('#fUrl').value=r.url||`https://open.spotify.com/${r.type}/${r.id}`; setDetected();
+  $('#fTitle').value=r.title; $('#fAuthor').value=r.author||''; $('#fPlat').value='spotify';
+  curImg=r.img||null; curSp={type:r.type,id:r.id,uri:r.uri,ids:[],durs:[]};
+  $('#spRes').innerHTML='<div class="hint">Lade Kapitel/Tracks …</div>'; refreshCover();
+  try{
+    const d=await spDetails(r.type,r.id);
+    curSp={type:d.type,id:d.id,uri:d.uri,ids:d.ids,durs:d.durs};
+    if(d.durs.length>1) $('#fDur').value=fmt(d.durs.reduce((a,v)=>a+v,0));
+    $('#spRes').innerHTML=`<div class="hint">✓ Übernommen${d.durs.length>1?` – ${d.durs.length} Tracks/Kapitel, Gesamtlänge ${fmt(d.durs.reduce((a,v)=>a+v,0))}`:''}. Unten prüfen und speichern.</div>`;
+  }catch(e){ $('#spRes').innerHTML='<div class="hint">✓ Übernommen (Kapitelliste konnte nicht geladen werden).</div>'; }
+}
+
+async function setImageFromFile(file){
+  if(!file||!/^image\//.test(file.type)) return;
+  const url=URL.createObjectURL(file);
+  try{
+    const img=await new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=url;});
+    const S=280,c=document.createElement('canvas');c.width=S;c.height=S;
+    const ctx=c.getContext('2d'),sc=Math.max(S/img.width,S/img.height),w=img.width*sc,h=img.height*sc;
+    ctx.drawImage(img,(S-w)/2,(S-h)/2,w,h);
+    curImg=c.toDataURL('image/jpeg',0.78); refreshCover();
+  }catch(e){ toast('Bild konnte nicht gelesen werden'); }
+  finally{ URL.revokeObjectURL(url); }
+}
+
+/* ================= settings ================= */
+function renderSettings(){
+  const el=$('#setSpotify');
+  const warn=secureOK?'':`<div class="notice" style="display:block">Diese Seite ist gerade als Datei geöffnet (${esc(location.protocol)}). Für die Spotify-Anmeldung muss sie über <b>https://</b> (z. B. GitHub Pages) oder <b>http://127.0.0.1</b> laufen – siehe Anleitung.</div>`;
+  if(connected()){
+    el.innerHTML=`<h3>Spotify</h3>
+      <p style="margin:0 0 8px">✓ Verbunden${sp.user?.name?` als <b>${esc(sp.user.name)}</b>`:''}</p>
+      ${!hasStreaming()?`<div class="notice" style="display:block">Damit Spotify direkt hier im Browser abspielen kann, bitte einmal neu verbinden. <button class="btn small sp" id="spRe" style="margin-left:6px">Neu verbinden</button></div>`:''}
+      <p class="hint">${isMobile?'Am Handy steuert die App deine Spotify-App fern (Spotify muss dort einmal geöffnet sein).':'Abspielen: direkt hier im Browser oder ferngesteuert auf Handy/PC – Auswahl unten im Player.'}</p>
+      <label class="switch"><input type="checkbox" id="autoChk" ${autoSync?'checked':''}> Automatisch synchronisieren (alle 20 s, solange die App offen ist)</label>
+      <p class="hint">Läuft auf Spotify ein Hörbuch aus deinem Regal, wird die Position automatisch gespeichert. Neue Hörbücher werden oben als Vorschlag angezeigt.</p>
+      <button class="btn small danger" id="spOut">Spotify trennen</button>`;
+    $('#autoChk').onchange=e=>{ autoSync=e.target.checked; LS.set('hr.sp.auto',autoSync); autoSync?startSync():stopSync(); };
+    $('#spOut').onclick=()=>spLogout(false);
+    if($('#spRe')) $('#spRe').onclick=spLogin;
+  } else {
+    el.innerHTML=`<h3>Spotify verbinden</h3>${warn}
+      <ol class="steps">
+        <li>Öffne <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> und melde dich mit deinem Spotify-Konto an <span class="hint">(Spotify verlangt dafür Premium)</span>.</li>
+        <li>„Create app“: Name z. B. <i>Hörregal</i>, Beschreibung beliebig.<br>Bei <b>Redirect URI</b> genau das eintragen:<br><code id="redir">${esc(REDIRECT)}</code> <button class="btn small" id="cpRedir" type="button">Kopieren</button></li>
+        <li>Bei „Which API/SDKs“ <b>Web API</b> anhaken, speichern.</li>
+        <li>In der App auf „Settings“ → <b>Client ID</b> kopieren und hier einfügen:</li>
+      </ol>
+      <div class="row" style="gap:8px;align-items:center">
+        <input class="search" id="cid" placeholder="Client ID" value="${esc(sp.clientId)}" style="background:var(--panel2)">
+        <button class="btn sp" id="spIn" ${secureOK?'':'disabled'}>${ICON.spotifyBlack} Verbinden</button>
+      </div>
+      <p class="hint">Kein Client Secret nötig. Deine Anmeldung bleibt nur in diesem Browser gespeichert.</p>`;
+    $('#cid').oninput=e=>{ sp.clientId=e.target.value.trim(); LS.set('hr.sp.client',sp.clientId); };
+    $('#spIn').onclick=spLogin;
+    $('#cpRedir').onclick=async()=>{ try{ await navigator.clipboard.writeText(REDIRECT); toast('Kopiert'); }catch(e){ toast('Bitte markieren und kopieren'); } };
+  }
+}
+
+/* ================= events ================= */
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-s]'); if(s){fStatus=s.dataset.s;render();return;}
+  const p=e.target.closest('[data-p]'); if(p){fPlat=p.dataset.p;render();return;}
+  const r=e.target.closest('[data-play]'); if(r){ const id=r.dataset.play; if(P&&P.id===id) pToggle(); else pOpen(books[id]); return; }
+  const ed=e.target.closest('[data-edit]'); if(ed){openModal(books[ed.dataset.edit]);return;}
+  if(e.target.closest('[data-add]')) openModal(null);
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){ closeModal(); $('#ovS').classList.remove('open'); }
+  if(e.key==='Enter'&&e.target.classList?.contains('card')) openModal(books[e.target.dataset.edit]);
+});
+$('#addBtn').onclick=()=>openModal(null);
+$('#setBtn').onclick=()=>{ renderSettings(); $('#ovS').classList.add('open'); };
+$('#closeS').onclick=()=>$('#ovS').classList.remove('open');
+$('#nowBtn').onclick=async()=>{ $('#nowBtn').disabled=true; await syncOnce(true); $('#nowBtn').disabled=false; };
+$('#cancelBtn').onclick=closeModal;
+$('#ov').addEventListener('mousedown',e=>{ if(e.target.id==='ov') closeModal(); });
+$('#ovS').addEventListener('mousedown',e=>{ if(e.target.id==='ovS') $('#ovS').classList.remove('open'); });
+$('#q').oninput=e=>{ q=e.target.value.trim().toLowerCase(); render(); };
+$('#spGo').onclick=runSearch;
+$('#spQ').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); runSearch(); } });
+let urlT=null;
+$('#fUrl').addEventListener('input',()=>{ const i=setDetected(); curSp=null;
+  if(i){ $('#fPlat').value=i.platform; if(i.t&&!parseTime($('#fPos').value)) $('#fPos').value=fmt(i.t); clearTimeout(urlT); urlT=setTimeout(enrichFromLink,400); }
+  refreshCover(); });
+['#fTitle','#fAuthor','#fPlat'].forEach(s=>$(s).addEventListener('input',refreshCover));
+$('#fPos').addEventListener('change',updateChapterFromPos);
+document.querySelectorAll('[data-step]').forEach(b=>b.onclick=()=>{ $('#fPos').value=fmt(parseTime($('#fPos').value)+ +b.dataset.step); updateChapterFromPos(); });
+$('#drop').onclick=()=>$('#fFile').click();
+$('#fFile').onchange=e=>setImageFromFile(e.target.files[0]);
+$('#rmImg').onclick=()=>{ curImg=null; refreshCover(); };
+['dragover','dragenter'].forEach(t=>$('#drop').addEventListener(t,e=>{e.preventDefault();$('#drop').classList.add('over');}));
+['dragleave','drop'].forEach(t=>$('#drop').addEventListener(t,e=>{e.preventDefault();$('#drop').classList.remove('over');}));
+$('#drop').addEventListener('drop',e=>setImageFromFile(e.dataTransfer.files[0]));
+$('#openBtn').onclick=()=>{ const b=books[editing]; if(b){ closeModal(); pOpen(b); } };
+$('#extBtn').onclick=()=>{ const b=books[editing]; if(b) openExternal(b); };
+
+/* player controls */
+$('#pPlay').onclick=()=>pToggle();
+$('#pBack').onclick=()=>pSeek(pNow()-30);
+$('#pFwd').onclick=()=>pSeek(pNow()+30);
+$('#pPrev').onclick=()=>pSkip(-1);
+$('#pNext').onclick=()=>pSkip(1);
+$('#pClose').onclick=()=>{ sleepAt=0; pClose(); };
+$('#pSleep').onclick=cycleSleep;
+$('#pSeek').addEventListener('input',e=>{ dragging=true; $('#pCur').textContent=fmt(+e.target.value); });
+$('#pSeek').addEventListener('change',e=>{ dragging=false; pSeek(+e.target.value); });
+$('#pRate').onclick=()=>{ if(!P||P.kind!=='yt') return; P.rate=RATES[(RATES.indexOf(P.rate)+1)%RATES.length]; LS.set('hr.rate',P.rate); try{ P.yt.setPlaybackRate(P.rate); }catch(e){} updateBar(); };
+$('#pDev').onchange=async e=>{
+  if(!P) return; const v=e.target.value;
+  if(v==='__reload'){ await loadDevices(); return; }
+  if(!v) return;
+  const g=pNow(), wasPlaying=P.playing&&!P.foreign;
+  if(wasPlaying){ try{ if(P.dev===SDKID&&sdkObj) await sdkObj.player.pause(); }catch(x){} }
+  P.dev=v; startTimers();
+  try{ await spStart(books[P.id],g); toast('Wiedergabe gewechselt'); }catch(x){}
+};
+document.addEventListener('keydown',e=>{
+  if(!P||e.target.matches('input,textarea,select')||$('#ov').classList.contains('open')||$('#ovS').classList.contains('open')) return;
+  if(e.code==='Space'){ e.preventDefault(); pToggle(); }
+  else if(e.key==='ArrowLeft'){ e.preventDefault(); pSeek(pNow()-30); }
+  else if(e.key==='ArrowRight'){ e.preventDefault(); pSeek(pNow()+30); }
+});
+window.addEventListener('pagehide',()=>{ if(P){ P.g=pNow(); pSave(true); } });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'&&P){ P.g=pNow(); pSave(true); } });
+
+document.addEventListener('paste',e=>{
+  const items=[...(e.clipboardData?.items||[])];
+  const imgItem=items.find(i=>i.type.startsWith('image/'));
+  if($('#ov').classList.contains('open')){ if(imgItem){ e.preventDefault(); setImageFromFile(imgItem.getAsFile()); } return; }
+  if(e.target.matches&&e.target.matches('input,textarea')) return;
+  const text=e.clipboardData?.getData('text')||''; const info=parseLink(text);
+  if(info){ e.preventDefault();
+    const ex=Object.values(books).find(b=>b.url===info.url);
+    if(ex){ toast('Schon im Regal – öffne Eintrag'); openModal(ex); } else openModal(null,text.trim()); }
+});
+
+$('#form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const info=parseLink($('#fUrl').value), prev=editing?books[editing]:null;
+  // title still loading? wait for it (max. ~6 s), then fall back to a placeholder title
+  if(!$('#fTitle').value.trim()&&enriching){ const sb=e.submitter; if(sb){sb.disabled=true;sb.textContent='Lade Titel …';} await enriching; if(sb){sb.disabled=false;sb.textContent='Speichern';} }
+  let title=$('#fTitle').value.trim();
+  if(!title){
+    if(!info){ $('#fTitle').focus(); toast('Bitte einen Titel oder Link eintragen'); return; }
+    title=info.platform==='youtube'?`YouTube-Hörbuch${info.videoId?' ('+info.videoId+')':''}`:'Spotify-Hörbuch';
+    toast('Ohne Titel gespeichert – du kannst ihn jederzeit ändern',3500);
+  }
+  const pos=parseTime($('#fPos').value), status=$('#fStatus').value;
+  const platform=$('#fPlat').value;
+  let spd=platform==='spotify'?(curSp||(info&&info.spId?{type:info.spType,id:info.spId,uri:`spotify:${info.spType}:${info.spId}`,ids:[],durs:[]}:null)):null;
+  if(spd&&prev&&prev.sp&&prev.sp.uri===spd.uri) spd={...prev.sp,...spd};
+  if(spd&&prev&&prev.pos!==pos&&spd.type==='show') spd={...spd,lastItemUri:null}; // manual edit on podcasts: just open
+  const b={ id:prev?.id||uid(), title, author:$('#fAuthor').value.trim(), platform,
+    url:info?info.url:($('#fUrl').value.trim()||''), status, pos, dur:parseTime($('#fDur').value)||0,
+    chapter:$('#fChapter').value.trim(), note:$('#fNote').value.trim(), img:curImg||null, sp:spd,
+    created:prev?.created||Date.now(), last:(!prev||prev.pos!==pos||prev.status!==status)?Date.now():(prev.last||Date.now()) };
+  if(b.dur&&b.pos>=b.dur-5&&b.status==='now') b.status='done';
+  const placeholder=!$('#fTitle').value.trim();
+  closeModal(); saveBook(b); if(!placeholder) toast(prev?'Gespeichert':'Zum Regal hinzugefügt');
+});
+let delArmed=false;
+$('#delBtn').onclick=()=>{
+  if(!delArmed){ delArmed=true; $('#delBtn').textContent='Wirklich löschen?'; setTimeout(()=>{delArmed=false;$('#delBtn').textContent='Löschen';},2500); return; }
+  delArmed=false; $('#delBtn').textContent='Löschen'; const id=editing; closeModal(); if(id){ removeBook(id); toast('Gelöscht'); }
+};
+
+/* export / import */
+$('#expBtn').onclick=()=>{
+  const blob=new Blob([JSON.stringify({app:'hoerregal',version:1,exported:new Date().toISOString(),books:Object.values(books)},null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`hoerregal-${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);
+};
+$('#impBtn').onclick=()=>$('#impFile').click();
+$('#impFile').onchange=async e=>{
+  const f=e.target.files[0]; if(!f) return; e.target.value='';
+  let data; try{ data=JSON.parse(await f.text()); }catch(err){ toast('Datei nicht lesbar'); return; }
+  const arr=Array.isArray(data)?data:data.books; if(!Array.isArray(arr)){ toast('Keine Hörregal-Sicherung'); return; }
+  let n=0;
+  for(const r of arr){
+    if(!r||typeof r.title!=='string') continue;
+    const id=typeof r.id==='string'&&/^[\w-]+$/.test(r.id)?r.id:uid();
+    books[id]={ id, title:r.title, author:String(r.author||''), platform:r.platform==='youtube'?'youtube':'spotify', url:String(r.url||''),
+      status:['now','later','done'].includes(r.status)?r.status:'later', pos:+r.pos||0, dur:+r.dur||0, chapter:String(r.chapter||''), note:String(r.note||''),
+      img:typeof r.img==='string'&&/^(data:image\/|https:\/\/)/.test(r.img)?r.img:null,
+      sp:r.sp&&typeof r.sp==='object'&&typeof r.sp.uri==='string'?{type:String(r.sp.type||''),id:String(r.sp.id||''),uri:r.sp.uri,ids:Array.isArray(r.sp.ids)?r.sp.ids.map(String):[],durs:Array.isArray(r.sp.durs)?r.sp.durs.map(Number):[],lastItemUri:r.sp.lastItemUri||null,lastOff:+r.sp.lastOff||0}:null,
+      created:+r.created||Date.now(), last:+r.last||Date.now() };
+    n++;
+  }
+  persist(); render(); toast(`${n} Hörbücher geladen`); $('#ovS').classList.remove('open');
+};
+
+/* ================= start ================= */
+(async()=>{
+  render();
+  await handleCallback();
+  render();
+  if(connected()){ startSync(); initSdk(); }
+  setInterval(()=>{ if(document.visibilityState==='visible') render(); },60000); // refresh "vor x Min."
+})();
+})();
+</script>
+</body>
+</html>
