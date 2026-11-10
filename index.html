@@ -6,6 +6,9 @@
 <meta name="theme-color" content="#16130f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Hörregal">
+<meta name="hoerregal" content="1">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
 <title>Hörregal</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e9a54b'/%3E%3Cpath d='M16 38v-6a16 16 0 0 1 32 0v6' stroke='%231d1406' stroke-width='5' fill='none'/%3E%3Crect x='12' y='36' width='10' height='16' rx='4' fill='%231d1406'/%3E%3Crect x='42' y='36' width='10' height='16' rx='4' fill='%231d1406'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +65,55 @@
   .search{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
   input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
 
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .grid .badge{font-size:10px;padding:3px 7px 3px 4px}.grid .badge svg{width:13px;height:13px}
+  .grid .status{font-size:10px;padding:2px 7px}
+  .grid .gen .gt{font-size:16px}
+  .grid .cplay{width:36px;height:36px}.grid .cplay svg{width:15px;height:15px}
+  /* compact list view */
+  .rows{display:flex;flex-direction:column;gap:6px}
+  .row{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px 10px;cursor:pointer;transition:border-color .12s,background .12s}
+  .row:hover{border-color:#5a4e3f;background:#241f19}
+  .row.cur{border-color:var(--accent)}
+  .rcov{position:relative;width:52px;height:52px;flex:0 0 52px;border-radius:8px;overflow:hidden;background:#000}
+  .rcov img{width:100%;height:100%;object-fit:cover;display:block}
+  .rcov .gen{padding:5px}.rcov .gen .gt{font-size:9px;-webkit-line-clamp:3}.rcov .gen div:last-child{display:none}
+  .rplat{position:absolute;right:2px;bottom:2px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center}
+  .rplat svg{width:12px;height:12px}
+  .rmain{flex:1;min-width:0}
+  .rt{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ra{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rprog{display:flex;align-items:center;gap:8px;margin-top:4px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .rprog .bar{flex:0 1 160px;height:3px}
+  .rside{display:flex;flex-direction:column;align-items:flex-end;gap:3px;font-size:11px;color:var(--muted);white-space:nowrap}
+  .rst{font-weight:600}.rst.now{color:var(--accent)}.rst.later{color:#9fb7ff}.rst.done{color:var(--ok)}
+  .rplay{width:34px;height:34px;flex:0 0 34px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .rplay svg{width:14px;height:14px}
+  .rplay:hover{filter:brightness(1.08)}
+  .rprog span{white-space:nowrap}
+  .chipscroll{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .row.st-now{box-shadow:inset 3px 0 0 var(--accent)} .row.st-later{box-shadow:inset 3px 0 0 #9fb7ff} .row.st-done{box-shadow:inset 3px 0 0 var(--ok)}
+  @media (max-width:560px){
+    .rside{display:none}
+    .row{gap:10px;padding:7px 8px 7px 10px} .rcov{width:46px;height:46px;flex-basis:46px} .rprog .bar{flex:1 1 auto}
+    /* header in one line */
+    header{flex-wrap:nowrap;gap:8px;margin-bottom:14px} h1{font-size:23px} #stats{font-size:11px}
+    header .btn{padding:8px 11px}
+    /* filters: one swipeable line */
+    .chipscroll{flex-wrap:nowrap;overflow-x:auto;flex:1 1 100%;gap:6px;padding-bottom:2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+    .chipscroll::-webkit-scrollbar{display:none}
+    .chipscroll .chips{flex-wrap:nowrap;gap:5px}
+    .chipscroll .chips+.chips{padding-left:6px;border-left:1px solid var(--line)}
+    .chip{white-space:nowrap;padding:5px 10px;font-size:12px}
+    .toolbar{gap:8px;margin-bottom:12px}
+    .search{flex:1 1 100%}
+    /* compact "continue" box */
+    .hero{gap:12px;padding:12px;margin-bottom:16px}
+    .hero .cover{width:72px;flex-basis:72px} .hero .badge{display:none}
+    .hero .gen{padding:6px}.hero .gen .gt{font-size:11px;-webkit-line-clamp:4}.hero .gen div:last-child{display:none}
+    .hero h2{font-size:16px} .hero .label{font-size:10px}
+    .hero .actions{margin-top:8px} .hero .actions .btn{padding:7px 11px;font-size:13px}
+  }
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform .12s,border-color .12s}
   .card:hover{transform:translateY(-2px);border-color:#5a4e3f}
   .card .body{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px;flex:1}
@@ -88,7 +139,7 @@
   .modal h2{font-family:Fraunces,Georgia,serif;margin:0 0 14px;font-size:24px}
   .modal h3{font-size:14px;margin:18px 0 8px;color:var(--accent);text-transform:uppercase;letter-spacing:1px}
   .mgrid{display:grid;grid-template-columns:150px 1fr;gap:16px}
-  @media (max-width:560px){.mgrid{grid-template-columns:1fr}.mgrid .cv{max-width:180px}.hero .cover{width:84px;flex-basis:84px}.hero h2{font-size:18px}h1{font-size:25px}}
+  @media (max-width:560px){.mgrid{grid-template-columns:1fr}.mgrid .cv{max-width:180px}}
   .field{display:flex;flex-direction:column;gap:4px;margin-bottom:11px}
   .field label{font-size:12px;color:var(--muted);font-weight:500}
   .field input,.field select,.field textarea{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;width:100%}
@@ -154,11 +205,14 @@
   .ytwrap iframe{width:100%;height:100%;border:0}
   @media (max-width:700px){
     .pin{flex-wrap:wrap;gap:8px 10px}
-    .pmeta{flex:1 1 0}
+    .pbar{padding-top:10px}
+    .pmeta{flex:1 1 calc(100% - 60px);padding-right:42px}
     .pcov{width:44px;height:44px;flex-basis:44px}
-    .pctl{order:3;flex:1 1 100%;justify-content:center}
-    .pright{order:2}
-    .pright select{max-width:110px}
+    #pClose{position:absolute;top:10px;right:12px;width:36px;height:36px}
+    .pctl{order:3;flex:0 0 auto;gap:6px}
+    .pright{order:4;flex:1 1 auto;justify-content:flex-end;gap:5px}
+    .pright .btn.small{padding:6px 8px;font-size:12px}
+    .pright select{max-width:120px}
     .ytwrap{right:12px;width:240px;height:135px;bottom:178px}
     body.playing .wrap{padding-bottom:230px}
   }
@@ -182,8 +236,11 @@
   <section class="hero" id="hero"></section>
 
   <div class="toolbar">
-    <div class="chips" id="statusChips"></div>
-    <div class="chips" id="platChips"></div>
+    <div class="chipscroll">
+      <div class="chips" id="statusChips"></div>
+      <div class="chips" id="platChips"></div>
+      <div class="chips" id="viewChips"></div>
+    </div>
     <input class="search" id="q" type="search" placeholder="Im Regal suchen …">
   </div>
 
@@ -204,7 +261,7 @@
 
     <div class="spsearch" id="spBox">
       <div class="row" style="gap:8px">
-        <input class="search" id="spQ" placeholder="Auf Spotify suchen: Titel oder Autor …" style="background:var(--panel)">
+        <input class="search" id="spQ" placeholder="Auf Spotify nach Titel suchen …" style="background:var(--panel)">
         <button type="button" class="btn sp" id="spGo"><span data-ico="spotifyBlack"></span>Suchen</button>
       </div>
       <div class="hint" id="spHint" style="margin-top:6px"></div>
@@ -284,10 +341,22 @@
 </div>
 
 <!-- Settings modal -->
+<!-- Background-play guide (YouTube on phones) -->
+<div class="overlay" id="ovB">
+  <div class="modal" style="max-width:460px">
+    <h2>Im Hintergrund weiterhören</h2>
+    <p class="hint" style="margin-top:-6px">YouTube stoppt im Handy-Browser, sobald du die App verlässt. So läuft es trotzdem weiter:</p>
+    <div id="bgSteps"></div>
+    <label class="switch" style="font-size:13px;color:var(--muted)"><input type="checkbox" id="bgNo"> Diese Anleitung nicht mehr automatisch zeigen</label>
+    <div class="mfoot"><button class="btn primary" id="bgOk">Verstanden</button></div>
+  </div>
+</div>
+
 <div class="overlay" id="ovS">
   <div class="modal">
     <h2>Einstellungen</h2>
     <div id="setSpotify"></div>
+    <div id="setApp"></div>
     <h3>Daten</h3>
     <p class="hint" style="margin-top:0">Deine Hörbücher sind nur in diesem Browser gespeichert. Mit einer Sicherungsdatei kannst du sie aufs Handy oder einen anderen Computer übertragen.</p>
     <div class="row" style="flex-wrap:wrap;gap:8px">
@@ -316,6 +385,7 @@
       <select id="pDev" title="Wo soll Spotify spielen?"></select>
       <button class="btn small" id="pRate" title="Geschwindigkeit">1×</button>
       <button class="btn small" id="pSleep" title="Schlaftimer: stoppt automatisch">☾</button>
+      <button class="btn small" id="pBg" title="Im Hintergrund weiterhören">⧉ Hintergrund</button>
       <button class="pb" id="pClose" title="Stoppen &amp; schließen" aria-label="Stoppen und schließen">✕</button>
     </div>
   </div>
@@ -502,14 +572,21 @@ async function api(path,opts={},retry=true){
 const bestImg=imgs=>imgs&&imgs.length?(imgs.find(i=>i.width&&i.width>=250&&i.width<=700)||imgs[0]).url:null;
 const names=arr=>(arr||[]).map(a=>a.name).filter(Boolean).join(', ');
 
+/* Search Spotify, but keep only results whose TITLE contains every search word. */
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ß/g,'ss');
+function titleMatches(title,q){ const t=norm(title); return norm(q).split(/[^a-z0-9?!]+/).filter(w=>w.length>1).every(w=>t.includes(w)); }
 async function spSearch(q){
-  const p=new URLSearchParams({q,type:'audiobook,album,show',limit:'8',market:'from_token'});
-  const d=await api('/search?'+p);
+  const qs=q.replace(/[":]/g,' ').trim();
+  const [d,da]=await Promise.all([
+    api('/search?'+new URLSearchParams({q:qs,type:'audiobook,show',limit:'10',market:'from_token'})),
+    api('/search?'+new URLSearchParams({q:`album:${qs}`,type:'album',limit:'10',market:'from_token'})).catch(()=>({}))
+  ]);
   const out=[];
   (d.audiobooks?.items||[]).filter(Boolean).forEach(a=>out.push({type:'audiobook',id:a.id,uri:a.uri,title:a.name,author:names(a.authors)||names(a.narrators),img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_chapters?`${a.total_chapters} Kapitel`:''}));
-  (d.albums?.items||[]).filter(Boolean).forEach(a=>out.push({type:'album',id:a.id,uri:a.uri,title:a.name,author:names(a.artists),img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_tracks?`${a.total_tracks} Tracks`:''}));
+  (da.albums?.items||[]).filter(Boolean).forEach(a=>out.push({type:'album',id:a.id,uri:a.uri,title:a.name,author:names(a.artists),img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_tracks?`${a.total_tracks} Tracks`:''}));
   (d.shows?.items||[]).filter(Boolean).forEach(a=>out.push({type:'show',id:a.id,uri:a.uri,title:a.name,author:'',img:bestImg(a.images),url:a.external_urls?.spotify,extra:a.total_episodes?`${a.total_episodes} Folgen`:''}));
-  return out;
+  const seen=new Set(), uniq=out.filter(r=>!seen.has(r.uri)&&seen.add(r.uri));
+  return {hits:uniq.filter(r=>titleMatches(r.title,qs)), others:uniq.filter(r=>!titleMatches(r.title,qs))};
 }
 /* Load track/chapter list (ids + durations) so positions can be shown book-wide. */
 async function spDetails(type,id){
@@ -580,9 +657,9 @@ async function syncOnce(manual){
   if(P&&P.kind==='sp'&&!manual) return; // the player polls itself
   try{
     const np=await nowPlaying(); lastSync=Date.now(); lastNp=np;
-    if(!np){ hideBanner(); if(manual) toast('Auf Spotify läuft gerade nichts'); renderSyncLine(); return; }
+    if(!np){ hideBanner('sp'); if(manual) toast('Auf Spotify läuft gerade nichts'); renderSyncLine(); return; }
     const b=findBookFor(np);
-    if(b){ const ch=applyNowPlaying(b,np); hideBanner(); if(manual) toast(ch?`„${b.title}“ aktualisiert: ${fmt(books[b.id].pos)}`:`„${b.title}“ ist aktuell`); }
+    if(b){ const ch=applyNowPlaying(b,np); hideBanner('sp'); if(manual) toast(ch?`„${b.title}“ aktualisiert: ${fmt(books[b.id].pos)}`:`„${b.title}“ ist aktuell`); }
     else if(manual){ const nb=await bookFromNowPlaying(np); toast(`„${nb.title}“ hinzugefügt`); }
     else if(!dismissed.includes(np.uri)) showBanner(np);
   }catch(e){
@@ -600,14 +677,14 @@ function renderSyncLine(){
   el.innerHTML=`<span class="dot ${syncTimer?'on':''}"></span>${syncTimer?'Spotify-Sync aktiv':'Spotify verbunden (Sync aus)'}${lastSync?' · zuletzt geprüft '+new Date(lastSync).toLocaleTimeString('de-AT',{hour:'2-digit',minute:'2-digit'}):''}`;
 }
 function showBanner(np){
-  const el=$('#banner');
+  const el=$('#banner'); el.dataset.kind='sp';
   el.innerHTML=`${np.img?`<img src="${esc(np.img)}" alt="">`:''}<div class="bt"><span class="sub">Läuft gerade auf Spotify</span><b>${esc(np.title)}</b><span class="sub">${esc(np.itemName)} · ${fmt(np.progress)}</span></div>
     <button class="btn sp small" id="bAdd">Ins Regal</button><button class="btn ghost small" id="bNo" title="Nicht mehr fragen">✕</button>`;
   el.style.display='flex';
   $('#bAdd').onclick=async()=>{ $('#bAdd').disabled=true; const b=await bookFromNowPlaying(np); hideBanner(); toast(`„${b.title}“ hinzugefügt`); };
   $('#bNo').onclick=()=>{ dismissed.push(np.uri); dismissed=dismissed.slice(-200); LS.set('hr.dismissed',dismissed); hideBanner(); };
 }
-function hideBanner(){ $('#banner').style.display='none'; }
+function hideBanner(kind){ const el=$('#banner'); if(kind&&el.dataset.kind&&el.dataset.kind!==kind) return; el.style.display='none'; }
 
 /* ================= in-app player ================= */
 const ms=s=>Math.max(0,Math.round((s||0)*1000));
@@ -753,7 +830,7 @@ function loadYT(){
 function ytState(e){
   if(!P||P.kind!=='yt') return;
   const S=window.YT.PlayerState;
-  if(e.data===S.PLAYING){ P.playing=true; P.started=true; }
+  if(e.data===S.PLAYING){ P.playing=true; P.started=true; maybeShowBgTip(); }
   else if(e.data===S.PAUSED||e.data===S.ENDED){
     const was=P.playing; P.playing=false; ytRead(); if(was||e.data===S.ENDED) pSave(true);
     if(e.data===S.ENDED&&!P.list){ const b=books[P.id]; if(b){ books[b.id]={...b,status:'done'}; persist(); render(); toast('Fertig gehört 🎉'); } }
@@ -830,10 +907,11 @@ function updateBar(){
   $('#pDur').textContent=total?fmt(total):'--:--';
   seek.disabled=!total;
   const hasTracks=(P.kind==='sp'&&(spMulti(b)||(b.sp&&b.sp.type==='show')))||(P.kind==='yt'&&P.list);
-  $('#pPrev').style.visibility=hasTracks?'visible':'hidden';
-  $('#pNext').style.visibility=hasTracks?'visible':'hidden';
+  $('#pPrev').style.display=hasTracks?'':'none';
+  $('#pNext').style.display=hasTracks?'':'none';
   $('#pDev').style.display=P.kind==='sp'?'':'none';
   $('#pRate').style.display=P.kind==='yt'?'':'none';
+  $('#pBg').style.display=P.kind==='yt'&&isMobile?'':'none';
   $('#pRate').textContent=String(P.rate||1).replace('.',',')+'×';
   const left=sleepAt?Math.max(0,Math.ceil((sleepAt-Date.now())/60000)):0;
   $('#pSleep').textContent=sleepAt?`☾ ${left}′`:'☾';
@@ -994,7 +1072,7 @@ function coverHTML(b){
 }
 document.addEventListener('error',e=>{ const t=e.target; if(t.tagName==='IMG'&&t.classList.contains('ci')){ t.outerHTML=genCover({title:t.dataset.t,author:t.dataset.a}); } },true);
 
-let fStatus='all',fPlat='all',q='';
+let fStatus='all',fPlat='all',q='',view=LS.get('hr.view','list');
 const sorted=()=>Object.values(books).sort((a,b)=>(b.last||b.created||0)-(a.last||a.created||0));
 const progress=b=>b.dur?Math.min(100,Math.round((b.pos||0)/b.dur*100)):(b.status==='done'?100:0);
 function render(){
@@ -1026,7 +1104,21 @@ function render(){
   } else hero.style.display='none';
 
   const list=all.filter(b=>(fStatus==='all'||b.status===fStatus)&&(fPlat==='all'||b.platform===fPlat)&&(!q||(b.title+' '+(b.author||'')).toLowerCase().includes(q)));
-  $('#grid').innerHTML=list.map(b=>`<article class="card" data-edit="${esc(b.id)}" tabindex="0">
+  $('#viewChips').innerHTML=[['list','☰ Liste'],['grid','▦ Raster']].map(([k,l])=>`<button class="chip ${view===k?'on':''}" data-v="${k}">${l}</button>`).join('');
+  $('#grid').className=view==='list'?'rows':'grid';
+  if(view==='list') $('#grid').innerHTML=list.map(b=>{
+    const pct=progress(b), isCur=P&&P.id===b.id, playing=isCur&&P.playing&&!P.foreign;
+    return `<article class="row st-${b.status} ${isCur?'cur':''}" data-edit="${esc(b.id)}" tabindex="0">
+      <div class="rcov">${b.img?`<img class="ci" alt="" src="${esc(b.img)}" referrerpolicy="no-referrer" data-t="${esc(b.title)}" data-a="">`:genCover(b)}<span class="rplat">${ICON[b.platform]||''}</span></div>
+      <div class="rmain">
+        <div class="rt">${esc(b.title)}</div>
+        <div class="ra">${esc([b.author,b.chapter].filter(Boolean).join(' · ')||PNAME[b.platform])}</div>
+        <div class="rprog">${b.dur?`<div class="bar"><i style="width:${pct}%"></i></div>`:''}<span>${fmt(b.pos)}${b.dur?' / '+fmt(b.dur):''}</span></div>
+      </div>
+      <div class="rside"><span class="rst ${b.status}">${SNAME[b.status]||''}</span><span class="rago">${ago(b.last)}</span></div>
+      ${b.url?`<button class="rplay" data-play="${esc(b.id)}" title="Abspielen ab ${fmt(b.pos)}" aria-label="Abspielen">${playing?ICO_PAUSE:ICO_PLAY}</button>`:''}
+    </article>`;}).join('');
+  else $('#grid').innerHTML=list.map(b=>`<article class="card" data-edit="${esc(b.id)}" tabindex="0">
       <div class="cover">${coverHTML(b)}${b.url?`<button class="cplay" data-play="${esc(b.id)}" title="Abspielen ab ${fmt(b.pos)}" aria-label="Abspielen">${P&&P.id===b.id&&P.playing?ICO_PAUSE:ICO_PLAY}</button>`:''}</div>
       <div class="body">
         <div class="t">${esc(b.title)}</div>
@@ -1059,7 +1151,7 @@ function updateChapterFromPos(){
   if(t) $('#fChapter').value=`Track ${t.idx+1}/${curSp.durs.length} · ${fmt(t.off)}`;
 }
 function spHintText(){
-  if(connected()) return 'Tipp: Viele deutsche Hörbücher sind auf Spotify als „Album“ eingestellt.';
+  if(connected()) return 'Gesucht wird nur im Titel. Tipp: Viele deutsche Hörbücher sind auf Spotify als „Album“ eingestellt.';
   return 'Spotify-Suche: zuerst in den Einstellungen ⚙︎ verbinden.';
 }
 function openModal(b,prefill){
@@ -1120,17 +1212,23 @@ async function enrichInner(){
   refreshCover();
 }
 
+function showResults(list,note){
+  $('#spRes').innerHTML=(note||'')+list.map((r,i)=>`<button type="button" class="res" data-i="${i}">
+      ${r.img?`<img src="${esc(r.img)}" alt="">`:'<span class="ph"></span>'}
+      <span class="rt"><b>${esc(r.title)}</b><span>${esc([r.author,r.extra].filter(Boolean).join(' · '))}</span></span>
+      <span class="tag">${TYPENAME[r.type]}</span></button>`).join('');
+  $('#spRes').querySelectorAll('.res').forEach(el=>el.onclick=()=>pickResult(list[+el.dataset.i]));
+}
 async function runSearch(){
   const qq=$('#spQ').value.trim(); if(!qq) return;
   $('#spRes').innerHTML='<div class="hint">Suche …</div>';
   try{
-    const res=await spSearch(qq);
-    if(!res.length){ $('#spRes').innerHTML='<div class="hint">Keine Treffer. Andere Schreibweise oder den Autor probieren.</div>'; return; }
-    $('#spRes').innerHTML=res.map((r,i)=>`<button type="button" class="res" data-i="${i}">
-        ${r.img?`<img src="${esc(r.img)}" alt="">`:'<span class="ph"></span>'}
-        <span class="rt"><b>${esc(r.title)}</b><span>${esc([r.author,r.extra].filter(Boolean).join(' · '))}</span></span>
-        <span class="tag">${TYPENAME[r.type]}</span></button>`).join('');
-    $('#spRes').querySelectorAll('.res').forEach(el=>el.onclick=()=>pickResult(res[+el.dataset.i]));
+    const {hits,others}=await spSearch(qq);
+    const more=others.length?`<button type="button" class="btn small ghost" id="spMore" style="margin-top:6px">Auch ${others.length} Treffer ohne „${esc(qq)}“ im Titel zeigen</button>`:'';
+    if(!hits.length){
+      $('#spRes').innerHTML=`<div class="hint">Kein Titel enthält „${esc(qq)}“. Andere Schreibweise oder weniger Wörter probieren.</div>${more}`;
+    } else { showResults(hits); if(more) $('#spRes').insertAdjacentHTML('beforeend',more); }
+    if($('#spMore')) $('#spMore').onclick=()=>showResults(hits.concat(others),'<div class="hint" style="margin-bottom:4px">Alle Treffer – auch ohne den Suchbegriff im Titel:</div>');
   }catch(e){ $('#spRes').innerHTML=`<div class="hint" style="color:#ff8a80">Suche fehlgeschlagen: ${esc(e.message)}</div>`; }
 }
 async function pickResult(r){
@@ -1162,7 +1260,20 @@ async function setImageFromFile(file){
 }
 
 /* ================= settings ================= */
+function renderAppSettings(){
+  const el=$('#setApp'); if(!el) return;
+  let inst;
+  if(isStandalone()) inst='<p style="margin:0">✓ Das Hörregal ist als App installiert.</p>';
+  else if(installEvt) inst=`<button class="btn primary" id="instBtn">📲 Als App installieren</button>`;
+  else if(isIOS) inst='<p class="hint" style="margin:0">In Safari unten auf <b>Teilen ⬆︎</b> → <b>„Zum Home-Bildschirm“</b>. Dann startet das Hörregal wie eine App.</p>';
+  else inst='<p class="hint" style="margin:0">Android: Chrome-Menü <b>⋮</b> → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b>.</p>';
+  el.innerHTML=`<h3>App aufs Handy</h3>${inst}
+    <p class="hint">${isIOS?'Am iPhone erscheint das Hörregal leider nicht im Teilen-Menü (das erlaubt Apple nicht) – Link kopieren und hier einfügen geht aber immer.':'Android: Nach der Installation steht <b>„Hörregal“ im Teilen-Menü</b> von YouTube und Spotify. Teilen → Hörregal, und das Hörbuch landet im Regal bzw. der Stand wird übernommen.'}</p>
+    ${!isMobile?`<h3>YouTube „Läuft gerade“ (Computer)</h3><p style="margin:0">${EXT.seen?'✓ Chrome-Erweiterung ist aktiv – was du auf youtube.com hörst, wird hier automatisch gespeichert.':'Chrome-Erweiterung nicht gefunden. Mit ihr merkt das Hörregal, welches Hörbuch du auf youtube.com hörst und wo du bist.'}</p>`:''}`;
+  if($('#instBtn')) $('#instBtn').onclick=async()=>{ const e=installEvt; installEvt=null; e.prompt(); try{ await e.userChoice; }catch(x){} renderAppSettings(); };
+}
 function renderSettings(){
+  renderAppSettings();
   const el=$('#setSpotify');
   const warn=secureOK?'':`<div class="notice" style="display:block">Diese Seite ist gerade als Datei geöffnet (${esc(location.protocol)}). Für die Spotify-Anmeldung muss sie über <b>https://</b> (z. B. GitHub Pages) oder <b>http://127.0.0.1</b> laufen – siehe Anleitung.</div>`;
   if(connected()){
@@ -1181,7 +1292,7 @@ function renderSettings(){
       <ol class="steps">
         <li>Öffne <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">developer.spotify.com/dashboard</a> und melde dich mit deinem Spotify-Konto an <span class="hint">(Spotify verlangt dafür Premium)</span>.</li>
         <li>„Create app“: Name z. B. <i>Hörregal</i>, Beschreibung beliebig.<br>Bei <b>Redirect URI</b> genau das eintragen:<br><code id="redir">${esc(REDIRECT)}</code> <button class="btn small" id="cpRedir" type="button">Kopieren</button></li>
-        <li>Bei „Which API/SDKs“ <b>Web API</b> anhaken, speichern.</li>
+        <li>Bei „Which API/SDKs“ <b>Web API</b> und <b>Web Playback SDK</b> anhaken, speichern.</li>
         <li>In der App auf „Settings“ → <b>Client ID</b> kopieren und hier einfügen:</li>
       </ol>
       <div class="row" style="gap:8px;align-items:center">
@@ -1199,13 +1310,14 @@ function renderSettings(){
 document.addEventListener('click',e=>{
   const s=e.target.closest('[data-s]'); if(s){fStatus=s.dataset.s;render();return;}
   const p=e.target.closest('[data-p]'); if(p){fPlat=p.dataset.p;render();return;}
+  const v=e.target.closest('[data-v]'); if(v){view=v.dataset.v;LS.set('hr.view',view);render();return;}
   const r=e.target.closest('[data-play]'); if(r){ const id=r.dataset.play; if(P&&P.id===id) pToggle(); else pOpen(books[id]); return; }
   const ed=e.target.closest('[data-edit]'); if(ed){openModal(books[ed.dataset.edit]);return;}
   if(e.target.closest('[data-add]')) openModal(null);
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){ closeModal(); $('#ovS').classList.remove('open'); }
-  if(e.key==='Enter'&&e.target.classList?.contains('card')) openModal(books[e.target.dataset.edit]);
+  if(e.key==='Escape'){ closeModal(); $('#ovS').classList.remove('open'); $('#ovB').classList.remove('open'); }
+  if(e.key==='Enter'&&(e.target.classList?.contains('card')||e.target.classList?.contains('row'))) openModal(books[e.target.dataset.edit]);
 });
 $('#addBtn').onclick=()=>openModal(null);
 $('#setBtn').onclick=()=>{ renderSettings(); $('#ovS').classList.add('open'); };
@@ -1241,6 +1353,63 @@ $('#pPrev').onclick=()=>pSkip(-1);
 $('#pNext').onclick=()=>pSkip(1);
 $('#pClose').onclick=()=>{ sleepAt=0; pClose(); };
 $('#pSleep').onclick=cycleSleep;
+
+/* ---- background play helper for YouTube on phones ---- */
+const isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const isAndroid=/Android/i.test(navigator.userAgent);
+const STEP=(n,t,s)=>`<div style="display:flex;gap:12px;margin:12px 0"><div style="flex:0 0 28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;display:flex;align-items:center;justify-content:center">${n}</div><div><b>${t}</b><div class="hint" style="font-size:13px;margin-top:2px">${s}</div></div></div>`;
+function bgGuide(){
+  let h;
+  if(isIOS){
+    h=`<h3 style="margin-top:6px">Weg A – Bild im Bild</h3>`+
+      STEP(1,'Im Video auf ⛶ tippen','Das kleine YouTube-Fenster wird groß (Symbol unten rechts im Video).')+
+      STEP(2,'Nach oben wischen','Das Video schrumpft zu einem Mini-Fenster und läuft weiter. Du kannst es an den Rand schieben – dann hörst du nur noch.')+
+      `<h3>Weg B – nur Ton</h3>`+
+      STEP(1,'App verlassen','Wischen oder Bildschirm sperren – YouTube pausiert kurz.')+
+      STEP(2,'Kontrollzentrum öffnen','Von rechts oben nach unten wischen (gesperrt: auf dem Sperrbildschirm).')+
+      STEP(3,'Dort auf ▶ tippen','Das Hörbuch läuft im Hintergrund weiter.');
+  } else {
+    h=`<h3 style="margin-top:6px">Weg A – Mini-Fenster</h3>`+
+      STEP(1,'Unten auf „⧉ Hintergrund“ tippen','Das Video wird automatisch groß (Vollbild).')+
+      STEP(2,'Home-Taste oder Wischgeste','Chrome macht daraus ein Mini-Fenster, das weiterläuft – auch in anderen Apps.')+
+      `<div class="hint" style="font-size:12px;margin:-4px 0 6px 40px">Klappt nicht? Einstellungen → Apps → Chrome → „Bild im Bild“ erlauben.</div>`+
+      `<h3>Weg B – nur Ton</h3>`+
+      STEP(1,'App verlassen','YouTube pausiert kurz.')+
+      STEP(2,'Benachrichtigungen herunterziehen','Dort steht eine Wiedergabe-Steuerung von Chrome.')+
+      STEP(3,'Auf ▶ tippen','Das Hörbuch läuft im Hintergrund weiter.');
+  }
+  h+=`<p class="hint" style="font-size:12px">Dein Stand wird so oder so gespeichert – beim Zurückkommen geht es mit ▶ genau dort weiter.</p>`;
+  $('#bgSteps').innerHTML=h;
+  $('#bgNo').checked=LS.get('hr.bgTip',false);
+  $('#ovB').classList.add('open');
+}
+$('#bgOk').onclick=()=>{ LS.set('hr.bgTip',$('#bgNo').checked); $('#ovB').classList.remove('open'); };
+$('#ovB').addEventListener('mousedown',e=>{ if(e.target.id==='ovB') $('#ovB').classList.remove('open'); });
+$('#pBg').onclick=async()=>{
+  if(!P||P.kind!=='yt') return;
+  if(isAndroid){
+    // must run inside the tap: make the video fullscreen, then leaving the app turns it into a mini window
+    const f=P.yt&&P.yt.getIframe&&P.yt.getIframe();
+    try{
+      if(!P.playing&&P.yt.playVideo) P.yt.playVideo();
+      await f.requestFullscreen({navigationUI:'hide'});
+      toast('Jetzt Home-Taste oder Wischgeste – läuft als Mini-Fenster weiter',6000);
+      return;
+    }catch(e){ /* fall back to the guide */ }
+  }
+  bgGuide();
+};
+// first YouTube playback on a phone: show the guide once (unless switched off)
+function maybeShowBgTip(){
+  if(!isMobile||LS.get('hr.bgTip',false)||maybeShowBgTip.done) return;
+  maybeShowBgTip.done=true; setTimeout(()=>{ if(P&&P.kind==='yt') bgGuide(); },1500);
+}
+// coming back after YouTube was paused in the background
+document.addEventListener('visibilitychange',()=>{
+  if(!P||P.kind!=='yt'||!isMobile) return;
+  if(document.visibilityState==='hidden'){ P.bgWasPlaying=P.playing; return; }
+  if(P.bgWasPlaying){ P.bgWasPlaying=false; setTimeout(()=>{ if(P&&P.kind==='yt'&&!P.playing) toast(`Pausiert bei ${fmt(pNow())} – ▶ tippen zum Weiterhören`,4500); },900); }
+});
 $('#pSeek').addEventListener('input',e=>{ dragging=true; $('#pCur').textContent=fmt(+e.target.value); });
 $('#pSeek').addEventListener('change',e=>{ dragging=false; pSeek(+e.target.value); });
 $('#pRate').onclick=()=>{ if(!P||P.kind!=='yt') return; P.rate=RATES[(RATES.indexOf(P.rate)+1)%RATES.length]; LS.set('hr.rate',P.rate); try{ P.yt.setPlaybackRate(P.rate); }catch(e){} updateBar(); };
@@ -1328,9 +1497,101 @@ $('#impFile').onchange=async e=>{
   persist(); render(); toast(`${n} Hörbücher geladen`); $('#ovS').classList.remove('open');
 };
 
+/* ================= find a book by link ================= */
+function findByLink(info){
+  return Object.values(books).find(b=>{
+    if(b.platform!==info.platform) return false;
+    const L=parseLink(b.url); if(!L) return false;
+    if(info.platform==='youtube') return (info.videoId&&L.videoId===info.videoId)||(info.list&&L.list===info.list&&!info.videoId);
+    return (info.spId&&(L.spId===info.spId||(b.sp&&b.sp.id===info.spId)))||L.url===info.url;
+  });
+}
+
+/* ================= Android: shared from the YouTube/Spotify app ================= */
+function handleShare(){
+  const q=new URLSearchParams(location.search);
+  if(!q.has('share_text')&&!q.has('share_url')&&!q.has('share_title')) return;
+  history.replaceState(null,'',location.pathname+location.hash);
+  const shareTitle=(q.get('share_title')||'').trim();
+  const all=[q.get('share_url'),q.get('share_text'),shareTitle].filter(Boolean).join(' ');
+  const m=all.match(/https?:\/\/[^\s"'<>]+/);
+  const info=m&&parseLink(m[0]);
+  if(!info){ toast('Im Geteilten war kein Spotify- oder YouTube-Link',4000); return; }
+  const b=findByLink(info);
+  if(b){
+    if(info.t){
+      saveBook({...b,pos:info.t,last:Date.now(),status:b.status==='done'?'done':'now'});
+      toast(`„${b.title}“: Stand ${fmt(info.t)} übernommen ✓`,4500);
+    } else {
+      saveBook({...b,last:Date.now()});
+      toast('Schon im Regal – trag hier ein, wo du bist',4000);
+      openModal(books[b.id]);
+    }
+    return;
+  }
+  openModal(null,m[0]);
+  if(shareTitle&&!/^https?:/.test(shareTitle)&&!$('#fTitle').value) $('#fTitle').value=shareTitle;
+  if(info.t) $('#fPos').value=fmt(info.t);
+}
+
+/* ================= desktop: Chrome extension reports what plays on YouTube ================= */
+const EXT={seen:false};
+function looksLikeAudiobook(d){ return d.dur>=1200||/hörbuch|hörspiel|hoerbuch|audiobook|audio book|kapitel|chapter|folge|teil \d/i.test(d.title||''); }
+function onYtNow(d){
+  if(!d||typeof d.videoId!=='string'||!/^[\w-]{6,20}$/.test(d.videoId)) return;
+  const t=Number(d.t), ts=Number(d.ts), dur=Number(d.dur)||0;
+  if(!isFinite(t)||!isFinite(ts)||Date.now()-ts>12*3600e3) return;
+  const list=typeof d.list==='string'&&/^[\w-]{6,64}$/.test(d.list)?d.list:null;
+  const index=Number.isInteger(d.index)&&d.index>=0?d.index:0;
+  const title=String(d.title||'').slice(0,300), channel=String(d.channel||'').slice(0,120);
+  const b=Object.values(books).find(x=>{ if(x.platform!=='youtube') return false; const L=parseLink(x.url); return L&&(L.videoId===d.videoId||(list&&L.list===list)); });
+  if(b){
+    if(P&&P.id===b.id) return;                         // our own player is in charge
+    if(ts<(b.last||0)-1000) return;                     // older than what we have
+    const pos=Math.floor(t);
+    const nb={...b,pos,last:ts};
+    if(b.status!=='done'||!d.paused) nb.status=(b.dur&&!list&&pos>=b.dur-5)?'done':'now';
+    if(!b.dur&&dur>0&&!list) nb.dur=Math.round(dur);
+    if(list&&parseLink(b.url).list===list){ nb.ytIdx=index; nb.chapter=`Video ${index+1}${title?': '+title:''}`; }
+    if(!b.img) nb.img=`https://i.ytimg.com/vi/${d.videoId}/hqdefault.jpg`;
+    if(Math.abs((b.pos||0)-pos)>=5||nb.status!==b.status||nb.chapter!==b.chapter) saveBook(nb);
+    if($('#banner').dataset.kind==='yt') hideBanner('yt');
+    return;
+  }
+  if(d.paused||!looksLikeAudiobook({dur,title})||dismissed.includes('yt:'+d.videoId)) return;
+  showYtBanner({videoId:d.videoId,list,index,title,channel,t,dur});
+}
+function showYtBanner(d){
+  const el=$('#banner'); el.dataset.kind='yt';
+  const img=`https://i.ytimg.com/vi/${d.videoId}/hqdefault.jpg`;
+  el.innerHTML=`<img src="${esc(img)}" alt="" referrerpolicy="no-referrer"><div class="bt"><span class="sub">Läuft gerade auf YouTube</span><b>${esc(d.title||'YouTube-Video')}</b><span class="sub">${esc(d.channel)} · ${fmt(d.t)}</span></div>
+    <button class="btn primary small" id="bAdd">Ins Regal</button><button class="btn ghost small" id="bNo" title="Nicht mehr fragen">✕</button>`;
+  el.style.display='flex';
+  $('#bAdd').onclick=()=>{
+    const url=`https://www.youtube.com/watch?v=${d.videoId}`+(d.list?`&list=${d.list}`:'');
+    const b={id:uid(),title:d.title||'YouTube-Hörbuch',author:d.channel,platform:'youtube',url,status:'now',pos:Math.floor(d.t),
+      dur:d.list?0:Math.round(d.dur||0),chapter:d.list?`Video ${d.index+1}`:'',note:'',img,created:Date.now(),last:Date.now()};
+    if(d.list) b.ytIdx=d.index;
+    saveBook(b); hideBanner(); toast(`„${b.title}“ hinzugefügt`);
+  };
+  $('#bNo').onclick=()=>{ dismissed.push('yt:'+d.videoId); dismissed=dismissed.slice(-200); LS.set('hr.dismissed',dismissed); hideBanner(); };
+}
+window.addEventListener('message',e=>{
+  if(e.source!==window||!e.data||e.data.source!=='hoerregal-ext') return;
+  if(!EXT.seen){ EXT.seen=true; if($('#ovS').classList.contains('open')) renderSettings(); }
+  if(e.data.type==='yt-now') onYtNow(e.data.data);
+});
+
+/* ================= install as app ================= */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; if($('#ovS').classList.contains('open')) renderSettings(); });
+const isStandalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+if('serviceWorker' in navigator&&secureOK) navigator.serviceWorker.register('sw.js').catch(()=>{});
+
 /* ================= start ================= */
 (async()=>{
   render();
+  handleShare();
   await handleCallback();
   render();
   if(connected()){ startSync(); initSdk(); }
